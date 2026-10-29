@@ -10,7 +10,7 @@
 4. 기존 pnpm 10.x를 확인해 재사용합니다. 세부 버전은 고정하지 않습니다. 없거나 실행할 수 없으면 `setup/bootstrap.env`의 대체 버전을 `.tools/pnpm`에 설치합니다. Corepack 확인 중에는 자동 다운로드를 막고 캐시는 저장소 안에 둡니다.
 5. `uv.lock`과 `pnpm-lock.yaml`을 바꾸지 않고 실습 패키지만 설치합니다. `uv sync --no-default-groups`와 `pnpm install --prod`로 실습용 의존성만 설치합니다.
 6. Chromium을 `.cache/playwright`에 설치하고 MFLUX 도움말·Chromium 실행을 확인합니다.
-7. `.tools/activate`를 제공해 현재 셸에서 저장소 전용 경로·캐시를 사용하게 합니다.
+7. `.tools/activate` 환경 파일을 만듭니다. 참가자 가이드 0단계에서 AI가 만드는 `scripts/run.sh`가 매 명령에서 이 파일을 적용합니다.
 
 실제 선택한 런타임 경로는 `.tools/runtime.env`에 있습니다. 활성화 파일의 `UV_PYTHON`은 이 Python을 지정하므로 기존 Python을 재사용해도 `uv run`이 대체 설치 버전을 다시 요구하지 않습니다. Python 바이트코드 캐시도 `.cache`로 모읍니다. 원격 설치 스크립트를 내려받아 바로 실행하지 않고 공식 파일의 SHA-256을 검증합니다. 고정 정보는 `setup/bootstrap.env`, 출처는 `setup/provenance.json`에 있습니다. Python 관리 설치의 배포 검증은 uv가 담당합니다.
 
@@ -26,20 +26,16 @@ bash scripts/setup.sh --dry-run
 
 ```bash
 bash scripts/setup.sh
-source .tools/activate
-pnpm run setup:check
-pnpm run setup:model
 ```
 
-`source .tools/activate`는 현재 터미널이 프로젝트의 도구·캐시 경로를 사용하게 합니다. 새 터미널에서도 저장소로 이동한 뒤 실행하세요. 설치를 반복하는 명령이 아닙니다. 마지막 모델 다운로드까지 수업 전에 완료하세요(약 15GB).
+셋업 스크립트는 설치가 끝나면 자체 검사를 실행하고 모델 준비 여부를 표시합니다. 성공 메시지가 나오면 도구 설치와 검사가 끝난 것입니다. 참가자 가이드 0단계의 AI 요청문은 `scripts/run.sh`를 만들고 모델 상태를 확인합니다. 이미 받은 모델은 다시 다운로드하지 않고, 없을 때만 약 15GB 모델을 받습니다. 모든 실습 명령은 `bash scripts/run.sh <명령과 인자>`로 실행합니다.
 
 다운로드한 고정 모델은 `.cache/model` 경로로 사용할 수 있습니다. 이 경로는 저장소 안 캐시의 snapshot을 가리킵니다. 모델 캐시·해시 식별 정보는 `reports/model.json`에도 기록합니다.
 
 ## 실습 중 규칙
 
 - 터미널·코딩 AI에서 이 저장소를 작업 폴더로 사용합니다.
-- 새 터미널은 `source .tools/activate` 후 사용합니다.
-- Python 명령은 `uv run --locked ...`, JavaScript 작업은 `pnpm run ...`을 사용합니다.
+- Python 명령은 `bash scripts/run.sh uv run --locked ...`, JavaScript 작업은 `bash scripts/run.sh pnpm run ...`을 사용합니다.
 - 단계 중 새 패키지가 필요하면 이유·라이선스를 확인해 정확한 버전으로 추가하고 잠금 파일을 갱신합니다. 별도의 전역 `pip install`·`npm install -g`·`brew install`은 기본 셋업에 필요하지 않습니다.
 - MFLUX에 `--model-path .cache/model`을 지정하고, 도구별 캐시는 활성화된 저장소 환경을 사용합니다. 저장소 밖에서 별도로 설치·다운로드한 것은 삭제 스크립트가 관리하지 않습니다.
 
@@ -64,9 +60,9 @@ bash scripts/uninstall.sh --yes
 | SHA-256 불일치                          | 받은 파일을 실행하지 않습니다. 공식 출처·고정 해시 확인. 임의로 검사를 끄지 않음                                                |
 | `.setup.lock`이 남음                    | 실행 중인 작업 확인. 모두 종료됐고 강제 종료로 남은 것이면 `rmdir .setup.lock` 후 재실행                                        |
 | pnpm 세부 버전 불일치 | 최신 저장소 설정으로 갱신. pnpm 10.x는 허용하며 패키지 설치는 기존 잠금 파일을 사용 |
-| `pnpm`·`uv`를 못 찾음                   | 저장소에서 `source .tools/activate`를 실행. 도구를 지웠다면 셋업 재실행                                                         |
+| `pnpm`·`uv`를 못 찾음                   | `scripts/run.sh`가 만들어졌는지 확인하고 `bash scripts/run.sh uv --version`으로 실행. 도구를 지웠다면 셋업 재실행              |
 | MFLUX import·Chromium 실행 실패         | 오류 전문과 macOS 버전을 기록. `bash scripts/setup.sh` 재실행 후 `--check`. 도구 설치 통과를 이미지 편집 성공으로 간주하지 않음 |
-| 모델 다운로드 실패                      | 네트워크·저장 공간·해당 모델 저장소 권한 확인 후 `pnpm run setup:model` 재실행                                                  |
+| 모델 다운로드 실패                      | 네트워크·저장 공간·해당 모델 저장소 권한 확인 후 `bash scripts/run.sh pnpm run setup:model` 재실행                             |
 | 이미지 편집 메모리 부족                 | 설치 실패와 다른 문제입니다. 참가자 가이드의 저메모리·기기 대안 판단을 따름                                                     |
 | 설치 소유 기록이 없음                   | 삭제 스크립트는 지우지 않습니다. `.workshop-owned`를 임의로 만들어 기존 환경을 삭제하지 마세요                                  |
 

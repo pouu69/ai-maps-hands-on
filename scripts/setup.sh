@@ -98,7 +98,7 @@ if [ "$MODE" = check ]; then
   "$ROOT/.venv/bin/python" -c 'from importlib.metadata import version; import mlx.core; import tomllib; from pathlib import Path; expected=next(d.split("==")[1] for d in tomllib.loads(Path("pyproject.toml").read_text())["project"]["dependencies"] if d.startswith("mflux==")); assert version("mflux")==expected; print("MFLUX", expected)'
   "$ROOT/.venv/bin/mflux-generate-flux2-edit" --help > /dev/null
   WORKSHOP_PNPM_PATH="$PNPM" "$NODE" "$ROOT/scripts/check-environment.mjs"
-  printf '도구·MFLUX 명령·Chromium 설치 검사 통과. 모델 다운로드·이미지 생성은 별도입니다.\n'
+  printf '도구·MFLUX 명령·Chromium 설치 검사 통과. 실제 이미지 편집은 4단계에서 확인합니다.\n'
   exit 0
 fi
 
@@ -237,4 +237,17 @@ STEP="Chromium 설치"
 mkdir -p config data/raw data/processed captures stylized corrected output reports web
 STEP="설치 검사"
 bash "$ROOT/scripts/setup.sh" --check
-printf '\n셋업 완료. 현재 터미널에서 다음을 실행하세요:\n  source .tools/activate\n  pnpm run setup:check\n이어서 수업 전에 모델을 받으세요(약 15GB): pnpm run setup:model\n'
+MODEL_READY=0
+if [ -L "$ROOT/.cache/model" ] && [ -d "$ROOT/.cache/model" ] && [ -f "$ROOT/reports/model.json" ]; then
+  if "$PYTHON" -c 'import json,os,sys; from pathlib import Path; config=json.loads(Path(sys.argv[1]).read_text()); report=json.loads(Path(sys.argv[2]).read_text()); link=Path(sys.argv[3]).resolve(strict=True); expected=Path(report["local_path"]).resolve(strict=True); sys.exit(0 if config["repo_id"] == report["repo_id"] and config["revision"] == report["revision"] and link == expected and link.is_dir() else 1)' \
+    "$ROOT/setup/model.json" "$ROOT/reports/model.json" "$ROOT/.cache/model"; then
+    MODEL_READY=1
+  fi
+fi
+printf '\n도구 설치·검사 완료.\n'
+if [ "$MODEL_READY" = 1 ]; then
+  printf '이미지 모델도 준비되어 있습니다. 다시 다운로드할 필요가 없습니다.\n'
+else
+  printf '이미지 모델은 아직 확인되지 않았습니다. 0단계 AI 요청문에서 준비하세요(약 15GB).\n'
+fi
+printf '다음: 참가자 가이드 0단계의 AI 요청문으로 실행 도우미와 프로젝트 맥락을 준비하세요.\n'

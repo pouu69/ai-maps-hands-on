@@ -4,6 +4,16 @@
 
 이 실습에서는 공유받은 저장소에서 **AI와 코드를 만들고 직접 실행합니다.** 지도 제작 완성 코드는 제공하지 않습니다. 기본 목표는 로컬에서 이동·확대할 수 있는 낮 지도입니다. 야경·실제 지형·인터넷 공개는 선택 과제입니다.
 
+## 이번 핸즈온에서 만들 것
+
+각자 사는 동네의 지도 데이터를 입체 그림으로 바꾸고, 브라우저에서 이동·확대할 수 있는 지도로 만듭니다. 처음부터 모든 선택을 할 필요는 없습니다. 동네 중심은 OSM을 살펴보는 1단계에서 정하고, 화풍은 이미지를 편집하는 4단계에서 정합니다.
+
+1. **환경 준비:** 저장소 안에 도구를 설치하고 이미지 편집 모델을 미리 받습니다.
+2. **동네 데이터 수집:** OpenStreetMap에서 동네 중심을 고르고, 그 1km × 1km 범위의 OSM·Overture 자료를 모읍니다.
+3. **지도 만들기:** 데이터를 정리해 bin으로 굽고, three.js로 그려 타일 이미지를 촬영합니다.
+4. **그림으로 바꾸기:** 이때 원하는 화풍을 정하고, 맥에서 MFLUX로 이미지를 편집합니다.
+5. **웹 지도 완성:** 결과 타일을 확인·합성해 브라우저 지도에 올립니다.
+
 ## 시작 전에 읽기
 
 ### 진행 순서와 역할
@@ -31,39 +41,31 @@ OSM 화면에서는 **동네 중심 좌표만 고르면 됩니다.** 건물·도
 
 ## 준비물 확인
 
-맥의 칩·메모리·여유 공간을 확인하세요. 0단계에서 AI가 만들 `progress.md`에 이 정보를 기록합니다.
+모델 파일은 약 15GB입니다. 셋업 도구와 모델을 받을 저장 공간을 확보하세요. 로컬 이미지 편집 속도와 메모리 여유는 4단계에서 실제로 시험합니다. 기기 정보를 AI에 미리 입력하거나 별도 파일에 기록할 필요는 없습니다.
 
 | 준비물              | 확인할 내용                                                                                                       |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Apple Silicon 맥북  |  → 이 Mac에 관하여에서 칩·메모리 기록. 8GB는 이번 이미지 편집 실습에 권장하지 않음                               |
-| 메모리·저장 공간    | 16GB는 소규모 시험부터. 24~32GB 이상과 여유 공간 30GB 이상을 계획용으로 권장. 공식 최소 사양이나 성공 보장은 아님 |
+| Apple Silicon 맥북  | 이 셋업 스크립트의 대상 환경. MFLUX는 8GB에서 권장하지 않으며, 16GB는 소규모 시험부터 가능                              |
+| 메모리·저장 공간    | 24~32GB 메모리와 여유 공간 30GB 이상을 계획용으로 권장. 공식 최소 사양이나 성공 보장은 아님                    |
 | 인터넷              | 지도 자료·패키지·최초 모델 다운로드에 사용. 기본 4B 모델 다운로드는 약 15GB                                       |
-| 코드 편집기·코딩 AI | 공유 저장소에서 파일 생성·명령 실행·오류 수정이 가능한 도구                                                  |
+| 코드 편집기·코딩 AI | 공유 저장소의 파일을 열고, 단계별 요청문으로 코드를 만들 수 있는 도구                                                  |
 | Python·uv           | 셋업 스크립트가 기존 Python 3.12를 재사용하거나 저장소 안에 준비                                                  |
 | Node.js·pnpm        | 기존 arm64 Node.js 20.19~26·pnpm 10.x 설치 여부 확인 후 재사용                                                 |
 | Chromium            | 셋업 스크립트가 Playwright 호환 브라우저를 저장소 캐시에 준비                                                     |
-| 지도 데이터 접근    | 각자 고른 동네의 OSM·Overture를 수집. 공식 건물 높이 자료는 선택 보완이며 기본 수집의 필수 조건이 아님            |
 
-이 도구들을 하나씩 수동 설치할 필요는 없습니다. 먼저 맥 종류와 저장 공간을 확인하고, 0단계의 저장소 셋업을 실행하세요.
-
-```bash
-uname -m
-df -h .
-```
-
-`uname -m`은 이 가이드의 대상 맥에서 `arm64`여야 합니다. 기본 셋업은 sudo·Homebrew·시스템 Python 변경 없이 진행합니다.
+설치 스크립트가 지원 환경을 확인하고 필요한 도구를 준비합니다. 별도로 버전 정보를 모아 AI에게 보낼 필요는 없습니다.
 
 ## 0. 공유 저장소 셋업하고 같은 폴더에서 시작하기
 
-**목표:** 공유 저장소에서 실습 명령을 실행할 수 있도록 도구·패키지를 준비하고, AI의 작업 위치와 기록 방식을 정합니다.
+**목표:** 이 저장소에서 실습 코드를 실행할 도구와 이미지 편집 모델을 준비합니다.
 
-**결과물:** 실습 실행 환경, 다운로드한 이미지 모델, 작업 기록 `progress.md`
+**결과물:** 실습 실행 환경, 다운로드한 이미지 모델, AI가 이어서 참고할 `progress.md`
 
 ### 참가자가 할 일
 
 1. 진행자가 공유한 저장소를 clone하거나 **Code → Download ZIP**으로 받아 압축을 푸세요.
 2. 그 폴더를 편집기와 터미널에서 여세요. README와 `scripts/setup.sh`가 보이는 위치여야 합니다.
-3. 아래 순서로 **수업 전에 모델 다운로드까지** 마치세요. 모델은 약 15GB이며 인터넷 속도에 따라 오래 걸릴 수 있습니다.
+3. 먼저 기본 도구를 설치하세요. 모델은 약 15GB이며 다운로드는 다음 AI 작업 뒤에 진행합니다.
 
 먼저 필요한 도구와 패키지를 설치합니다. Node.js·pnpm은 설치 여부와 호환 버전을 확인해 기존 것을 사용합니다. 없는 도구와 MFLUX·모델·캐시는 삭제하기 쉽도록 기본적으로 이 프로젝트 안에 설치합니다.
 
@@ -71,18 +73,7 @@ df -h .
 bash scripts/setup.sh
 ```
 
-다음 명령은 **현재 터미널에서 이 프로젝트의 도구와 캐시 경로를 사용하도록 설정**합니다. `source`는 셋업이 만든 `.tools/activate` 파일을 현재 터미널에 적용하는 명령입니다. 설치를 다시 하는 명령은 아닙니다.
-
-```bash
-source .tools/activate
-```
-
-설치가 정상인지 검사하고, 이미지 편집에 쓸 모델을 미리 받으세요. 각 명령이 성공한 뒤 다음 명령을 실행합니다.
-
-```bash
-pnpm run setup:check
-pnpm run setup:model
-```
+`setup.sh`는 설치가 끝나면 자체 검사를 실행합니다. 성공 메시지가 나오면 기본 도구 설치와 검사가 끝난 것입니다. 이후 Codex CLI나 Codex Desktop의 명령마다 저장소 환경을 적용할 수 있도록 AI에게 작은 실행 도우미를 만들게 합니다.
 
 기존 Node.js는 arm64 20.19 이상~26 계열, pnpm은 10.x를 사용합니다. pnpm 10.32.1처럼 세부 버전이 달라도 허용합니다. 호환 도구가 없으면 저장소 안에 대체 버전을 준비합니다.
 
@@ -100,62 +91,32 @@ pnpm run setup:model
 
 설치 환경은 마지막 단계의 삭제 명령으로 정리합니다. 기존 전역 도구와 실습 결과는 남습니다. 자세한 설치·복구 방법은 저장소의 `docs/setup.md`를 참고하세요.
 
-### 터미널을 닫았다가 다시 열었다면
+### AI 요청문 — 실행 도우미와 프로젝트 맥락 만들기
 
-편집기에서 이 저장소의 터미널을 연 뒤 아래 명령을 한 번 실행하세요. 다른 폴더에서 열었다면 먼저 `cd`로 이 저장소로 이동합니다. 설치와 모델 다운로드를 매번 반복할 필요는 없습니다.
-
-```bash
-source .tools/activate
-```
-
-### AI와 작업 기록 준비하기
-
-코딩 AI의 작업 폴더도 이 저장소로 열고 다음 요청을 한 번 전달합니다.
-
-### AI 요청문 — 실습 규칙과 기록 파일 준비
-
-아래 요청문을 코딩 AI에 보내면 **저장소 최상위에 `progress.md`를 만듭니다.** 이 파일이 가이드에서 말하는 ‘작업 기록’입니다. 편집기에서 열어 내 맥 정보와 화풍을 채우세요. 아직 정하지 않은 동네·좌표는 1단계에서 채워도 됩니다.
+Codex CLI는 명령마다 별도 셸에서 실행할 수 있어 터미널 환경 설정이 이어지지 않을 수 있습니다. 아래 요청은 AI가 매 명령에 프로젝트 환경을 적용하는 `scripts/run.sh`와, 새 대화에서 목표와 진행 단계를 이어갈 `progress.md`를 만들게 합니다.
 
 ```text
-이 저장소에서 우리 동네 1km × 1km의 그림 지도를 처음부터 만들 거야.
-지금 요청한 단계만 구현하고 다음 단계까지 한꺼번에 만들지 마.
-기본은 평면 지형·낮 지도이며, 학습·GPU 서버·유료 이미지 API는 사용하지 않아.
+README.md, AGENTS.md, docs/participant-guide.md를 읽고 저장소 규칙과 실습 목표를 파악해.
+Codex CLI와 터미널에서 매 명령에 프로젝트 환경을 적용하도록 scripts/run.sh를 만들어.
+스크립트는 bash로 실행하고, 저장소 경로를 찾아 그 위치로 이동해.
+.tools/activate를 스크립트 안에서 불러온 뒤 전달받은 명령을 exec로 실행해.
+인자가 없거나 환경 파일이 없으면 해결 방법을 출력하고 종료해.
+전역 환경은 바꾸지 마. 이후 모든 실습 명령은 bash scripts/run.sh <명령과 인자>로 실행해.
 
-기존 셋업·삭제 스크립트와 패키지 명세를 유지해.
-Python은 uv, JavaScript는 pnpm을 쓰고 설치·캐시는 저장소 안에 둬.
-추가 패키지가 실제로 필요하면 공식 출처·라이선스·정확한 버전을 확인하고
-uv add 또는 pnpm add로 명세·잠금 파일을 함께 갱신해. 전역 설치는 하지 마.
-기본 셋업에 GIS 수집·공간 처리용 패키지가 모두 포함된 것은 아니야.
-추가 설치까지 끝낸 뒤 이 가이드의 --locked 명령을 실행할 수 있게 해.
+README와 가이드를 기준으로 프로젝트 목표, AI와 참가자의 역할, 현재 상태와 다음 단계를
+짧게 progress.md에 정리해. 새 AI 대화는 이 파일과 가이드의 현재 단계를 읽고,
+단계가 끝나면 실제로 확인한 결과만 갱신하게 적어. 참가자에게 별도 정보를 묻지 마.
 
-입출력 경로·좌표·단위를 짧게 정하고 작은 실제 입력부터 구현해.
-원본은 보존하고, 설정이 다른 실행은 별도 폴더에 저장해.
-파일을 만들었다면 경로와 여는 방법을, 코드를 만들었다면 실행 명령을 알려줘.
-실행하지 않은 기능은 완료라고 기록하지 마.
-기존 README를 유지하며 실습 실행법을 추가하고, 실제 출처는 sources.md에 기록해.
-저장소 최상위에 progress.md를 만들고 다음 항목을 넣어줘.
-기기 정보나 실행 결과를 확인하지 못했다면 추측하지 말고 미확인으로 남겨.
-- 맥 칩 / 메모리
-- 여유 저장 공간
-- 코딩 AI / 편집기
-- Python / Node.js / pnpm / uv 실제 사용 버전
-- 동네 이름 / 중심 경도·위도 (1단계에서 확정)
-- 원하는 화풍
-- 지형: 평면(기본)
-- 설치 검사 결과 / 모델 다운로드 결과
-- 현재 단계 / 실행 명령 / 결과 파일 / 해결할 문제
-
-지금은 기록 파일만 준비하고, 지도 수집 코드는 아직 작성하지 마.
-생성한 progress.md의 위치와 참가자가 채울 항목을 알려줘.
+스크립트를 만든 뒤 모델이 이미 준비됐는지 확인해.
+reports/model.json의 저장소·리비전이 setup/model.json과 같고,
+.cache/model이 보고서의 실제 모델 폴더를 가리키면 다시 다운로드하지 마.
+모델이 없다면 bash scripts/run.sh pnpm run setup:model로 받아.
+progress.md에는 확인된 설치·모델 상태와 다음 단계를 기록해.
+다운로드가 실패하면 원인을 기록하고 성공한 것처럼 표시하지 마.
+지도 코드는 아직 작성하지 마.
 ```
 
-### 1단계로 넘어가기 전에
-
-1. `setup:check` 마지막에 설치 검사 통과가 표시됐는지 확인하세요.
-2. `setup:model`이 끝나고 `.cache/model`과 `reports/model.json`이 생겼는지 확인하세요. 다운로드가 끊겼다면 같은 명령으로 다시 받습니다.
-3. 편집기에서 루트의 `progress.md`를 열어 내 정보와 두 명령의 결과를 기록하세요. 모르는 항목은 AI에게 확인을 맡기세요.
-
-여기까지는 도구와 모델을 준비한 것입니다. 실제 이미지 편집이 내 맥에서 잘 되는지는 4단계에서 촬영한 이미지 한 장으로 확인합니다. 준비가 끝났으면 이제 지도에 담을 동네를 고릅니다.
+모델 다운로드까지 성공하면 실습 준비가 끝납니다. 그다음 1단계에서 OpenStreetMap을 열고 동네와 중심 좌표를 정합니다. 새 터미널에서도 `source`를 따로 실행하지 않고 `bash scripts/run.sh <명령과 인자>`를 사용합니다.
 
 ## 1. 동네 범위를 정하고 데이터를 수집하기
 
@@ -166,10 +127,10 @@ uv add 또는 pnpm add로 명세·잠금 파일을 함께 갱신해. 전역 설�
 ### 참가자가 할 일
 
 1. [OpenStreetMap](https://www.openstreetmap.org/)에서 만들고 싶은 동네를 찾으세요.
-2. 중심점을 우클릭해 ‘주소 보기 / Show address’ 등으로 경도·위도를 확인하세요. 메뉴가 다르면 지도 중심을 맞춘 뒤 URL의 `#map=확대율/위도/경도`에서 읽을 수 있습니다.
-3. 경도와 위도를 구분해 아래 요청문에 넣으세요. 기본 지형은 평면으로 시작합니다.
+2. 중심점을 우클릭해 ‘주소 보기 / Show address’ 등으로 위도·경도를 확인하세요. 메뉴가 다르면 지도 중심을 맞춘 뒤 URL의 `#map=확대율/위도/경도`에서 읽을 수 있습니다.
+3. 위도와 경도를 구분해 아래 요청문에 넣으세요. 기본 지형은 평면으로 시작합니다.
 
-지도 파일을 손으로 추출할 필요는 없습니다. 다음 세 작업을 **하나씩** AI에게 요청하고 실행하세요.
+지도 파일을 웹사이트에서 미리 내려받을 필요는 없습니다. AI에게 수집 코드를 작성하게 한 뒤, 참가자가 실행 명령을 실행해 자료를 받습니다. 다음 작업을 **하나씩** 진행하세요.
 
 ### 1-1. 범위 미리보기
 
@@ -178,7 +139,7 @@ uv add 또는 pnpm add로 명세·잠금 파일을 함께 갱신해. 전역 설�
 **AI 요청문 설명:** 좌표를 구역 설정 파일로 저장하고, 수집 없이도 열리는 범위 미리보기를 만드는 요청입니다.
 
 ```text
-동네 이름은 [동네 이름], 중심 경도는 [경도], 위도는 [위도]야.
+동네 이름은 [동네 이름], 중심 위도는 [위도], 경도는 [경도]야.
 이 중심의 가로 1000m × 세로 1000m 범위를 만들어줘. 반경 1km가 아니야.
 config/workshop.json에 중심점·미터 좌표계·원점·범위·지형=평면을 기록해.
 위경도에 임의의 고정 도 단위를 더하지 말고 미터 좌표계에서 계산해.
@@ -193,7 +154,7 @@ scripts/collect.py --config config/workshop.json --preview를 구현해.
 ### 실행
 
 ```bash
-uv run --locked python scripts/collect.py --config config/workshop.json --preview
+bash scripts/run.sh uv run --locked python scripts/collect.py --config config/workshop.json --preview
 ```
 
 `reports/area.html`을 브라우저에서 열어 내가 고른 동네와 1km 사각형인지 확인하세요. 틀리면 좌표부터 수정합니다.
@@ -202,7 +163,7 @@ uv run --locked python scripts/collect.py --config config/workshop.json --previe
 
 **목표:** 확정한 구역의 건물·도로·물·공원을 OSM에서 받아 지도에 표시합니다.
 
-**AI 요청문 설명:** 앞서 만든 collect.py에 OSM 다운로드와 결과 미리보기 기능을 추가하는 요청입니다.
+**AI 요청문 설명:** 앞서 만든 collect.py가 Overpass API에서 OSM 자료를 받아 저장하고 미리보기로 보여주도록 코드를 추가하는 요청입니다. 이 요청문만 보내서는 자료가 내려받아지지 않습니다.
 
 ```text
 같은 collect.py에 --source osm을 추가해.
@@ -219,8 +180,10 @@ reports/collection.html에 범위와 OSM 결과를 겹쳐 보여줘.
 ```
 
 ```bash
-uv run --locked python scripts/collect.py --config config/workshop.json --source osm
+bash scripts/run.sh uv run --locked python scripts/collect.py --config config/workshop.json --source osm
 ```
+
+위 명령을 실행하면 collect.py가 내가 고른 구역의 OSM 자료를 받아 `data/raw/`에 저장합니다. 참가자는 실행 결과를 확인합니다. 직접 OSM 파일을 찾아 내려받을 필요는 없습니다.
 
 미리보기에서 익숙한 건물·도로가 같은 위치에 있는지 확인하세요. 서버 요청이 계속 실패하면 [지역 PBF](https://download.geofabrik.de/asia/south-korea.html)에서 추출하는 방식으로 AI와 수집 코드를 바꿉니다. PBF는 별도 다운로드·추출 시간이 필요합니다.
 
@@ -243,7 +206,7 @@ reports/collection.html에서 OSM과 Overture를 각각 켜고 끄며 비교하�
 ```
 
 ```bash
-uv run --locked python scripts/collect.py --config config/workshop.json --source overture
+bash scripts/run.sh uv run --locked python scripts/collect.py --config config/workshop.json --source overture
 ```
 
 **완료 기준:** 같은 사각형 안에서 두 출처를 비교할 수 있고, 실제 파일과 개수가 기록됩니다. 물·공원이 0개면 원래 없는지 조회가 빠진 것인지 확인합니다. Overture 건물이 0개인 정상 응답은 보완할 건물이 없다는 뜻이며, 수집 실패와 구분합니다.
@@ -304,9 +267,9 @@ reports/bake.md에 중복·보완·임시 높이 개수와 건물 ID별 높이·
 ### 실행
 
 ```bash
-uv run --locked python scripts/bake.py --config config/workshop.json
-uv run --locked python scripts/check_bin.py
-pnpm run check:bin
+bash scripts/run.sh uv run --locked python scripts/bake.py --config config/workshop.json
+bash scripts/run.sh uv run --locked python scripts/check_bin.py
+bash scripts/run.sh pnpm run check:bin
 ```
 
 **완료 기준:** Python과 JavaScript가 같은 데이터를 읽습니다. 잘못된 높이가 없는지 몇 개 건물을 확인했고, 임시 높이의 개수를 알고 있습니다. 원본과 정리 파일은 분리돼 있습니다.
@@ -367,14 +330,13 @@ pnpm run capture:pilot은 이 3장, pnpm run capture:all은 전체를 찍게 해
 첫 터미널에서 서버를 켜세요. 이 터미널은 켜 둡니다.
 
 ```bash
-pnpm run dev
+bash scripts/run.sh pnpm run dev
 ```
 
 브라우저에서 `http://localhost:5173`을 열어 도시를 확인하세요. 두 번째 터미널도 같은 작업 폴더에서 열고 실행합니다.
 
 ```bash
-source .tools/activate
-pnpm run capture:pilot
+bash scripts/run.sh pnpm run capture:pilot
 ```
 
 **완료 기준:** PNG 3장이 모두 1024×1024입니다. 가로 이웃은 오른쪽·왼쪽 256px, 세로 이웃은 아래·위 256px에서 같은 대상이 일치합니다. 지도 위치·높이·방향이 정상입니다.
@@ -395,10 +357,10 @@ pnpm run capture:pilot
 
 **목표:** 0단계에서 받은 모델을 사용할 수 있는지와 이미지 편집 명령의 옵션을 확인합니다.
 
-0단계에서 받은 `.cache/model`을 그대로 사용합니다. 다운로드를 마치지 못했다면 `pnpm run setup:model`로 먼저 완료하세요.
+0단계에서 받은 `.cache/model`을 그대로 사용합니다. 다운로드를 마치지 못했다면 `bash scripts/run.sh pnpm run setup:model`로 먼저 완료하세요.
 
 ```bash
-uv run --locked mflux-generate-flux2-edit --help
+bash scripts/run.sh uv run --locked mflux-generate-flux2-edit --help
 mkdir -p stylized
 ```
 
@@ -411,7 +373,7 @@ mkdir -p stylized
 `--prompt`의 문장을 원하는 화풍으로 바꿔 실행하세요. 영어가 어렵다면 AI에 문장 작성을 맡기세요. 입력은 3단계에서 만든 대표 이미지 `captures/pilot.png`입니다.
 
 ```bash
-uv run --locked mflux-generate-flux2-edit \
+bash scripts/run.sh uv run --locked mflux-generate-flux2-edit \
   --model flux2-klein-4b \
   --model-path .cache/model \
   --image-paths captures/pilot.png \
@@ -460,18 +422,18 @@ reports/stylize.md에 설정·시드·모델 식별 정보·결과 경로·시�
 ### 실행
 
 ```bash
-uv run --locked python scripts/stylize.py --pilot
+bash scripts/run.sh uv run --locked python scripts/stylize.py --pilot
 ```
 
 **진행 판단:** 이웃 3장의 구조·연결이 유지되고 처리 시간이 수업에 맞으면 전체로 확대합니다.
 
-메모리가 부족하면 AI와 공식 저메모리 옵션을 확인하세요. 512px 시험은 진단용이며 1024px 완료로 세지 않습니다. 그래도 실패하면 다른 기기를 사용하거나, `pnpm run capture:all`로 전체 원본을 촬영해 5~8단계를 계속할 수 있습니다. 이 경우 최종 입력에 원본 경로를 연결하고 **화풍 변환은 미완료**로 기록합니다.
+메모리가 부족하면 AI와 공식 저메모리 옵션을 확인하세요. 512px 시험은 진단용이며 1024px 완료로 세지 않습니다. 그래도 실패하면 다른 기기를 사용하거나, `bash scripts/run.sh pnpm run capture:all`로 전체 원본을 촬영해 5~8단계를 계속할 수 있습니다. 이 경우 최종 입력에 원본 경로를 연결하고 **화풍 변환은 미완료**로 기록합니다.
 
 시험을 통과한 뒤 실행합니다.
 
 ```bash
-pnpm run capture:all
-uv run --locked python scripts/stylize.py --all
+bash scripts/run.sh pnpm run capture:all
+bash scripts/run.sh uv run --locked python scripts/stylize.py --all
 ```
 
 예상 편집 시간은 **실제 장수 × 연속 처리의 평균 장당 시간**입니다. 예를 들어 25장이 장당 1분이면 25분이며 다운로드·로딩·재시도는 별도입니다. 이것은 측정 결과가 아닌 계산 예시입니다.
@@ -570,7 +532,7 @@ reports/pyramid.md에 누락·파일 치수·겹침·투명 경계 검사 결과
 ### 실행
 
 ```bash
-uv run --locked python scripts/build_pyramid.py
+bash scripts/run.sh uv run --locked python scripts/build_pyramid.py
 ```
 
 **완료 기준:** `output/overview.png`에서 도로가 이어지고 이중 건물이 두드러지지 않습니다. 모든 WebP 타일은 768×768px이며, 경계 밖은 투명합니다. 필요한 라이브러리의 WebP 저장 지원을 실제로 확인합니다.
@@ -612,13 +574,13 @@ bin의 건물 외곽선·높이·ID와 공통 카메라로 보이는 벽을 계�
 먼저 시험 구역만 실행하세요.
 
 ```bash
-uv run --locked python scripts/lights.py --pilot
+bash scripts/run.sh uv run --locked python scripts/lights.py --pilot
 ```
 
 창문이 건물 밖으로 새지 않는지 확인한 뒤 전체를 실행하세요.
 
 ```bash
-uv run --locked python scripts/lights.py --all
+bash scripts/run.sh uv run --locked python scripts/lights.py --all
 ```
 
 낮 그림이나 패치를 고치면 영향을 받은 불빛도 다시 확인합니다.
@@ -663,7 +625,7 @@ R2 업로드·공개 배포는 아직 수행하지 마.
 서버가 이미 켜져 있으면 같은 포트로 다시 실행하지 말고 기존 서버를 사용하세요.
 
 ```bash
-pnpm run dev
+bash scripts/run.sh pnpm run dev
 ```
 
 브라우저에서 `http://localhost:5173`을 열고 아래를 확인하세요.
@@ -734,16 +696,15 @@ bash scripts/uninstall.sh --yes
 
 셋업이 소유한 `.tools`·`.venv`·`node_modules`·`.cache`를 삭제합니다. **기존 전역 도구와 작성한 코드·지도·이미지·보고서는 남습니다.** 소유 기록이 없으면 삭제하지 않으며, 기록을 임의로 만들면 안 됩니다.
 
-삭제 후 현재 터미널을 닫으세요. 새 터미널에서는 기존 도구 경로를 사용합니다. 작업 폴더 자체는 남습니다.
+삭제 후 현재 터미널을 닫으세요. 작업 폴더와 AI가 만든 `scripts/run.sh`는 남습니다.
 
 나중에 이어서 실습하려면 새 터미널에서 같은 저장소로 이동해 실행하세요.
 
 ```bash
 bash scripts/setup.sh
-source .tools/activate
 ```
 
-이미지 편집도 다시 하려면 `pnpm run setup:model`로 지운 모델을 다시 받습니다. 작성한 코드와 남겨둔 데이터·이미지는 그대로 이어서 사용합니다.
+도구 설치가 끝나면 `bash scripts/run.sh pnpm run setup:model`로 지운 모델을 다시 받습니다. 작성한 코드와 남겨둔 데이터·이미지는 그대로 이어서 사용합니다.
 
 ## 막혔을 때 AI에게 전달할 형식
 
@@ -765,7 +726,7 @@ source .tools/activate
 | 증상                              | 먼저 확인할 것                                                                             |
 | --------------------------------- | ------------------------------------------------------------------------------------------ |
 | 데이터 대신 HTML이 저장됨         | 로그인·차단·오류 페이지 여부. 데이터를 받았다고 간주하지 않기                              |
-| 건물이 없거나 엉뚱한 곳에 있음    | 경도/위도 순서, CRS, 원점, 단위, 조회 범위                                                 |
+| 건물이 없거나 엉뚱한 곳에 있음    | 위도·경도 값을 바꿔 넣었는지, CRS, 원점, 단위, 조회 범위                                    |
 | 낮은 건물이 고층으로 나옴         | 높이 필드·층수 단위·공간 매칭·임시값 출처                                                  |
 | 촬영 PNG가 2048px 또는 빈 화면    | DPR·캔버스 크기·렌더 완료 신호                                                             |
 | 모델이 메모리 부족으로 종료됨     | 다른 앱 종료, 4비트 설정·공식 저메모리 옵션 확인. 불가능하면 대체 기기·실제 결과 사용 기록 |
