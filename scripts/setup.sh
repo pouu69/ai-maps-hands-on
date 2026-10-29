@@ -3,6 +3,10 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+# Older activation files exported this repository-local cache and hid Corepack's global pnpm.
+if [ "${COREPACK_HOME:-}" = "$ROOT/.cache/corepack" ]; then
+  unset COREPACK_HOME
+fi
 MODE=install
 STEP="인자 확인"
 TEMP_DIR=""
@@ -189,7 +193,7 @@ PNPM=""
 EXISTING_PNPM="$(command -v pnpm || true)"
 # Keep Corepack's existing cache so a globally installed pnpm shim remains usable.
 if [ -n "$EXISTING_PNPM" ]; then
-  if ACTUAL_PNPM_VERSION="$(COREPACK_ENABLE_NETWORK=0 "$EXISTING_PNPM" --version 2>/dev/null)"; then
+  if ACTUAL_PNPM_VERSION="$(COREPACK_ENABLE_NETWORK=0 "$EXISTING_PNPM" --version)"; then
     case "$ACTUAL_PNPM_VERSION" in
       10.*) PNPM="$EXISTING_PNPM" ;;
       *) printf '기존 pnpm %s: pnpm 10.x가 필요해 저장소 전용 버전을 준비합니다.\n' "$ACTUAL_PNPM_VERSION" ;;
@@ -218,6 +222,7 @@ STEP="셸 활성화 파일 생성"
 } > "$ROOT/.tools/runtime.env"
 {
   printf '# 이 저장소 안의 도구와 캐시를 사용합니다. 셸 설정 파일은 수정하지 않습니다.\n'
+  printf 'if [ "${COREPACK_HOME:-}" = %q ]; then unset COREPACK_HOME; fi\n' "$ROOT/.cache/corepack"
   for name in UV_CACHE_DIR UV_PYTHON_INSTALL_DIR UV_PYTHON_BIN_DIR UV_PYTHON_PREFERENCE UV_PROJECT_ENVIRONMENT UV_SYSTEM_CERTS HF_HOME MFLUX_CACHE_DIR TORCH_HOME MPLCONFIGDIR XDG_CACHE_HOME PYTHONPYCACHEPREFIX PLAYWRIGHT_BROWSERS_PATH COREPACK_ENABLE_AUTO_PIN; do
     printf 'export %s=%q\n' "$name" "${!name}"
   done
