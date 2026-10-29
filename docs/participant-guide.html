@@ -8,7 +8,7 @@
       content="각자 자기 동네의 1km 범위 OSM·Overture를 수집하고 AI와 코딩해 그림 웹 지도를 만드는 참가자 가이드"
     />
     <title>AI와 만드는 우리 동네 지도 · 참가자 가이드</title>
-    <!-- Generated from participant-guide.md; source SHA-256: 8438f64c89225be034d1b16d769ebe0d9666edd52468ced2b591b861d49dc4f2. Edit the Markdown source before regenerating. -->
+    <!-- Generated from participant-guide.md; source SHA-256: c9041b92805bab290cff8ce0be1105c7952ff5ab661f126ea7477cdb9d368c6f. Edit the Markdown source before regenerating. -->
     <style>
       :root {
         color-scheme: light;
@@ -567,7 +567,6 @@ bash scripts/run.sh pnpm run setup:model을 실행해.
 확인한 모델 준비 상태와 다음 단계만 progress.md에 반영해.
 지도 데이터 수집이나 지도 코드는 아직 작성하지 마.
 </code></pre>
-<p>모델 준비가 끝나면 실습 환경과 이미지 편집 모델이 준비된 것입니다. 다음 1단계에서 OpenStreetMap을 열고 동네와 중심 좌표를 정합니다. 새 터미널에서도 <code>source</code>를 따로 실행하지 않고 <code>bash scripts/run.sh &lt;명령과 인자&gt;</code>를 사용합니다.</p>
 <h2 id="section-11">1. 동네 범위를 정하고 데이터를 수집하기</h2>
 <p><strong>목표:</strong> 내 동네의 1km 사각형을 확정하고, 같은 구역의 OSM·Overture 원본을 확보해 위치를 비교합니다.</p>
 <p><strong>결과물:</strong> 구역 설정, 출처별 원본 데이터, 범위·수집 결과 미리보기</p>
@@ -577,59 +576,69 @@ bash scripts/run.sh pnpm run setup:model을 실행해.
 <li>중심점을 우클릭해 ‘주소 보기 / Show address’ 등으로 위도·경도를 확인하세요. 메뉴가 다르면 지도 중심을 맞춘 뒤 URL의 <code>#map=확대율/위도/경도</code>에서 읽을 수 있습니다.</li>
 <li>위도와 경도를 구분해 아래 요청문에 넣으세요. 기본 지형은 평면으로 시작합니다.</li>
 </ol>
-<p>지도 파일을 웹사이트에서 미리 내려받을 필요는 없습니다. AI에게 수집 코드를 작성하게 한 뒤, 참가자가 실행 명령을 실행해 자료를 받습니다. 다음 작업을 <strong>하나씩</strong> 진행하세요.</p>
 <h3 id="section-13">1-1. 범위 미리보기</h3>
 <p><strong>목표:</strong> 데이터를 받기 전에 중심점과 1km 사각형이 원하는 곳인지 확인합니다.</p>
-<p><strong>AI 요청문 설명:</strong> 좌표를 구역 설정 파일로 저장하고, 수집 없이도 열리는 범위 미리보기를 만드는 요청입니다.</p>
+<p><strong>AI 요청문 설명:</strong> AI가 중심 좌표를 설정 파일로 저장하고, 선택한 1km 사각형을 보여주는 코드를 작성·실행합니다.</p>
 <pre><code class="language-text">동네 이름은 [동네 이름], 중심 위도는 [위도], 경도는 [경도]야.
 이 중심의 가로 1000m × 세로 1000m 범위를 만들어줘. 반경 1km가 아니야.
-config/workshop.json에 중심점·미터 좌표계·원점·범위·지형=평면을 기록해.
+미터 좌표계에서 중심으로부터 동서남북 각각 500m로 계산해.
 위경도에 임의의 고정 도 단위를 더하지 말고 미터 좌표계에서 계산해.
+config/workshop.json에 동네 이름·중심 위도/경도·미터 좌표계·원점·범위·지형=평면을 저장해.
 
-scripts/collect.py --config config/workshop.json --preview를 구현해.
-중심점과 사각형을 볼 수 있는 reports/area.html을 만들어줘.
-미리보기는 지도 데이터 수집 전에도 열려야 해.
+중심점과 사각형을 볼 수 있는 미리보기 코드를 작성하고 실행해.
+reports/area.html에 배경 지도·중심점·사각형 경계와 가로/세로 길이를 표시해.
 로컬 파일 내용을 HTML에 포함해 파일 열기로 볼 수 있게 하고,
-배경 지도가 인터넷을 쓴다면 연결이 필요함을 알려줘. 여는 방법도 안내해.
-</code></pre>
-<h3 id="section-14">실행</h3>
-<pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/collect.py --config config/workshop.json --preview
+배경 지도가 인터넷을 쓴다면 연결이 필요함을 알려줘.
+
+오류가 나면 원인을 확인해 수정하고, 생성된 파일과 범위가 1000m × 1000m인지 확인해.
+미리보기를 여는 방법을 알려주고, 파일 경로·실행 명령·확인한 결과를 progress.md에 기록해.
+다음 수집에서도 같은 설정과 코드를 이어 쓸 수 있게 해. 이번에는 범위 미리보기까지만 만들어.
 </code></pre>
 <p><code>reports/area.html</code>을 브라우저에서 열어 내가 고른 동네와 1km 사각형인지 확인하세요. 틀리면 좌표부터 수정합니다.</p>
 <h3 id="section-15">1-2. OSM 수집</h3>
 <p><strong>목표:</strong> 확정한 구역의 건물·도로·물·공원을 OSM에서 받아 지도에 표시합니다.</p>
-<p><strong>AI 요청문 설명:</strong> 앞서 만든 collect.py가 Overpass API에서 OSM 자료를 받아 저장하고 미리보기로 보여주도록 코드를 추가하는 요청입니다. 이 요청문만 보내서는 자료가 내려받아지지 않습니다.</p>
-<pre><code class="language-text">같은 collect.py에 --source osm을 추가해.
-config의 사각형에서 조회용 위경도 bbox를 계산하고 Overpass API로
-건물·도로·물·공원을 받아 data/raw/에 원본을 보존해.
+<p>이 실습은 OSM 데이터를 조회하는 <a href="https://wiki.openstreetmap.org/wiki/Overpass_API#Public_Overpass_API_instances">Overpass API의 공용 서버</a>를 사용합니다. 가입·API 키 발급이 필요 없는 서버를 선택하므로 인터넷 연결만 있으면 시작할 수 있습니다. 공용 서버는 혼잡하거나 요청을 제한할 수 있어, 받은 원본은 저장해 재사용합니다.</p>
+<p><strong>AI 요청문 설명:</strong> 앞서 만든 구역 설정과 코드를 이어서 사용해 OSM 수집 기능을 추가하고 실행합니다. 원본 데이터를 저장하고, 선택한 구역과 겹쳐 볼 미리보기를 만듭니다.</p>
+<pre><code class="language-text">progress.md와 config/workshop.json, 앞서 만든 코드를 확인해.
+같은 코드에 OSM 수집 기능을 추가하고 실행해.
+가입·API 키가 필요 없는 공용 Overpass 엔드포인트를 선택해 설정에 기록해.
+앞서 확인한 사각형에서 조회용 위경도 bbox를 계산하고 Overpass API로
+건물·도로·물·공원을 받아 data/raw/에 OSM 출처를 구분할 수 있게 원본을 보존해.
 경계에 걸친 도형도 완전한 형상을 받고 구멍·복합 폴리곤을 유지해.
 높이·층수 태그도 보존해. 빈 결과와 다운로드 실패를 구분해.
 시간 초과·요청 제한은 제한적으로 재시도하고 계속 실패하면 이유를 알려줘.
+요청은 한 번에 하나씩 보내고 앱을 식별할 User-Agent를 지정해.
+같은 구역에서 이미 받은 원본은 재사용해.
 
-reports/collection.html에 범위와 OSM 결과를 겹쳐 보여줘.
+reports/collection.html에 배경 지도·1km 경계·OSM 결과를 겹쳐 보여줘.
+건물·도로·물·공원을 구분하고 각각 켜고 끌 수 있게 해.
 로컬 데이터를 HTML에 포함해 브라우저에서 파일 열기로 볼 수 있게 해.
-자료 개수·출처·수집 시각·파일 해시는 reports/collection.md에 기록해.
-필요한 패키지는 저장소 환경에 추가하고 실제 실행 명령을 알려줘.
+유형별 자료 개수·출처·조회 범위·수집 시각·원본 경로·파일 해시는 reports/collection.md에 기록해.
+필요한 패키지는 저장소 환경에 추가해.
+
+저장된 원본과 자료 개수를 확인하고 reports/collection.html의 위치와 여는 방법을 알려줘.
+실행 오류가 나면 원인을 확인해 수정하고, 실패한 수집을 완료로 기록하지 마.
+사용한 파일 경로·실행 명령·확인한 결과를 progress.md에 기록해.
 </code></pre>
-<pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/collect.py --config config/workshop.json --source osm
-</code></pre>
-<p>위 명령을 실행하면 collect.py가 내가 고른 구역의 OSM 자료를 받아 <code>data/raw/</code>에 저장합니다. 참가자는 실행 결과를 확인합니다. 직접 OSM 파일을 찾아 내려받을 필요는 없습니다.</p>
-<p>미리보기에서 익숙한 건물·도로가 같은 위치에 있는지 확인하세요. 서버 요청이 계속 실패하면 <a href="https://download.geofabrik.de/asia/south-korea.html">지역 PBF</a>에서 추출하는 방식으로 AI와 수집 코드를 바꿉니다. PBF는 별도 다운로드·추출 시간이 필요합니다.</p>
+<p><code>reports/collection.html</code>을 열어 익숙한 건물·도로가 같은 위치에 있는지 확인하세요. 서버 요청이 계속 실패하면 <a href="https://download.geofabrik.de/asia/south-korea.html">지역 PBF</a>에서 추출하는 방식으로 AI와 수집 코드를 바꿉니다. PBF는 별도 다운로드·추출 시간이 필요합니다.</p>
 <h3 id="section-16">1-3. Overture 건물 수집</h3>
 <p><strong>목표:</strong> OSM과 비교할 같은 구역의 Overture 건물을 확보합니다. 중복 제거와 실제 보완은 2단계에서 합니다.</p>
-<p><strong>AI 요청문 설명:</strong> 같은 수집 코드에 Overture 건물 추출을 추가하고, 두 출처를 켜고 끄며 비교하게 하는 요청입니다.</p>
-<pre><code class="language-text">collect.py에 --source overture를 추가해.
+<p><strong>AI 요청문 설명:</strong> 같은 수집 코드에 Overture 건물 추출을 추가하고 실행합니다. 결과 미리보기에서 두 출처를 켜고 끄며 비교할 수 있게 만듭니다.</p>
+<pre><code class="language-text">progress.md와 config/workshop.json, 앞서 만든 수집 코드를 확인해.
+같은 코드에 Overture 건물 수집 기능을 추가하고 실행해.
 Overture 공식 다운로드 방법·현재 릴리스·실제 스키마를 확인하고,
 같은 bbox의 건물만 공간 추출해. 선택한 릴리스를 기록하고 이후에는 재사용해.
 전 세계 건물 파일을 통째로 다운로드하지 마.
 수집에 필요한 도구·패키지가 없으면 저장소 환경에 정확한 버전으로 추가해.
 
-원본을 data/raw/에 별도 보관하고 높이·층수 정보도 유지해.
+원본을 data/raw/에 OSM과 구분해 별도 보관하고 높이·층수 정보도 유지해.
 reports/collection.html에서 OSM과 Overture를 각각 켜고 끄며 비교하게 해.
-건물이 0개인 정상 응답과 요청 실패를 구분해 collection.md에 기록해.
+건물이 0개인 정상 응답과 요청 실패를 구분해 reports/collection.md에 기록해.
+
+저장된 원본과 건물 개수를 확인하고, 실행 오류가 나면 원인을 확인해 수정해.
+사용한 파일 경로·실행 명령·확인한 결과를 progress.md에 기록해.
 </code></pre>
-<pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/collect.py --config config/workshop.json --source overture
-</code></pre>
+<p><code>reports/collection.html</code>을 열어 OSM·Overture를 번갈아 보며 건물 위치와 빠진 건물을 비교하세요.</p>
 <p><strong>완료 기준:</strong> 같은 사각형 안에서 두 출처를 비교할 수 있고, 실제 파일과 개수가 기록됩니다. 물·공원이 0개면 원래 없는지 조회가 빠진 것인지 확인합니다. Overture 건물이 0개인 정상 응답은 보완할 건물이 없다는 뜻이며, 수집 실패와 구분합니다.</p>
 <p>OSM 또는 Overture 요청이 실패하면 해당 단계에서 해결합니다. 다른 동네 데이터를 내 동네 결과로 기록하지 마세요.</p>
 <details>
