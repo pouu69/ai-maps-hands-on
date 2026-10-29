@@ -61,8 +61,8 @@ source "$ROOT/setup/bootstrap.env"
 PYTHON_VERSION="$(tr -d '\r\n' < "$ROOT/.python-version")"
 NODE_VERSION="$(tr -d '\r\n' < "$ROOT/.node-version")"
 if [ "$MODE" = dry-run ]; then
-  printf '대상: %s\nuv %s → Python %s → Node.js %s → package.json의 pnpm → uv sync --locked --no-default-groups → pnpm install --prod --frozen-lockfile → Chromium\n' "$ROOT" "$UV_VERSION" "$PYTHON_VERSION" "$NODE_VERSION"
-  printf '호환되는 기존 Python·Node.js·고정 uv 우선 사용. pnpm은 저장소 전용 설치. 시스템·셸 설정 변경 없음. 모델 가중치 다운로드 없음.\n'
+  printf '대상: %s\nuv %s → Python %s → Node.js %s → 기존 pnpm 10.x 또는 고정 대체 pnpm → uv sync --locked --no-default-groups → pnpm install --prod --frozen-lockfile → Chromium\n' "$ROOT" "$UV_VERSION" "$PYTHON_VERSION" "$NODE_VERSION"
+  printf '호환되는 기존 Python·Node.js·pnpm·고정 uv 우선 사용. 없는 도구는 저장소 안에 설치. 시스템·셸 설정 변경 없음. 모델 가중치 다운로드 없음.\n'
   exit 0
 fi
 
@@ -78,6 +78,8 @@ export TORCH_HOME="$ROOT/.cache/torch"
 export MPLCONFIGDIR="$ROOT/.cache/matplotlib"
 export XDG_CACHE_HOME="$ROOT/.cache/xdg"
 export PYTHONPYCACHEPREFIX="$ROOT/.cache/pycache"
+export COREPACK_HOME="$ROOT/.cache/corepack"
+export COREPACK_ENABLE_AUTO_PIN=0
 export PLAYWRIGHT_BROWSERS_PATH="$ROOT/.cache/playwright"
 export PATH="$ROOT/.tools/node/bin:$ROOT/.tools/pnpm/bin:$ROOT/.tools/uv:$ROOT/.tools/bin:$PATH"
 UV="$ROOT/.tools/uv/uv"
@@ -90,7 +92,7 @@ if [ "$MODE" = check ]; then
   [ -x "$UV" ] || fail 'uv가 없습니다. bash scripts/setup.sh를 실행하세요.'
   [ "$("$UV" --version | cut -d ' ' -f 2)" = "$UV_VERSION" ] || fail 'uv 버전이 다릅니다. 셋업을 다시 실행하세요.'
   [ -x "$NODE" ] || fail 'Node.js가 없습니다. 셋업을 실행하세요.'
-  "$NODE" -e 'const n=Number(process.versions.node.split(".")[0]); if(n<22||n>26||process.arch!=="arm64")process.exit(1)' || fail 'Node.js는 arm64 22~26 계열이어야 합니다. 셋업을 다시 실행하세요.'
+  "$NODE" -e 'const n=Number(process.versions.node.split(".")[0]); if(n<20||n>26||(n===20&&Number(process.versions.node.split(".")[1])<19)||process.arch!=="arm64")process.exit(1)' || fail 'Node.js는 arm64 20.19 이상~26 계열이어야 합니다. 셋업을 다시 실행하세요.'
   [ -x "$ROOT/.venv/bin/python" ] || fail 'Python 가상환경이 없습니다. 셋업을 실행하세요.'
   "$ROOT/.venv/bin/python" -c 'import sys; assert sys.version_info[:2] == (3, 12), "Python 3.12 환경이 필요합니다"'
   "$ROOT/.venv/bin/python" -c 'from importlib.metadata import version; import mlx.core; import tomllib; from pathlib import Path; expected=next(d.split("==")[1] for d in tomllib.loads(Path("pyproject.toml").read_text())["project"]["dependencies"] if d.startswith("mflux==")); assert version("mflux")==expected; print("MFLUX", expected)'
@@ -165,11 +167,10 @@ if [ -z "$PYTHON" ]; then
   "$UV" python install "$PYTHON_VERSION"
   PYTHON="$("$UV" python find "$PYTHON_VERSION")"
 fi
-PNPM_VERSION="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["packageManager"].removeprefix("pnpm@"))' "$ROOT/package.json")"
 
 STEP="Node.js 설치"
 EXISTING_NODE="$(command -v node || true)"
-if [ ! -x "$NODE" ] && [ -n "$EXISTING_NODE" ] && "$EXISTING_NODE" -e 'const n=Number(process.versions.node.split(".")[0]);process.exit(n>=22&&n<=26&&process.arch==="arm64"?0:1)' 2>/dev/null; then
+if [ ! -x "$NODE" ] && [ -n "$EXISTING_NODE" ] && "$EXISTING_NODE" -e 'const n=Number(process.versions.node.split(".")[0]);process.exit(n>=20&&n<=26&&(n!==20||Number(process.versions.node.split(".")[1])>=19)&&process.arch==="arm64"?0:1)' 2>/dev/null; then
   NODE="$EXISTING_NODE"
 fi
 if [ ! -x "$NODE" ]; then
@@ -184,18 +185,31 @@ if [ ! -x "$NODE" ]; then
 fi
 export PATH="$(dirname "$NODE"):$PATH"
 
-STEP="pnpm 설치"
-PNPM="$ROOT/.tools/pnpm/bin/pnpm"
-# A global Corepack shim can download into the user cache even for --version.
-# Use a private pnpm without invoking that shim: https://github.com/nodejs/corepack#corepack_home
-if [ ! -x "$PNPM" ] || [ "$("$PNPM" --version)" != "$PNPM_VERSION" ]; then
-  download "https://registry.npmjs.org/pnpm/-/pnpm-$PNPM_VERSION.tgz" "$PNPM_SHA256" "$ROOT/.cache/downloads/pnpm.tgz"
-  mkdir "$TEMP_DIR/pnpm"
-  tar -xzf "$ROOT/.cache/downloads/pnpm.tgz" -C "$TEMP_DIR/pnpm" --strip-components=1
-  [ "$("$NODE" "$TEMP_DIR/pnpm/bin/pnpm.cjs" --version)" = "$PNPM_VERSION" ] || fail '받은 pnpm 버전이 고정 버전과 다릅니다.'
-  ln -s pnpm.cjs "$TEMP_DIR/pnpm/bin/pnpm"
-  if [ -d "$ROOT/.tools/pnpm" ]; then mv "$ROOT/.tools/pnpm" "$TEMP_DIR/previous-pnpm"; fi
-  mv "$TEMP_DIR/pnpm" "$ROOT/.tools/pnpm"
+STEP="pnpm 확인·설치"
+PNPM=""
+EXISTING_PNPM="$(command -v pnpm || true)"
+# Probe Corepack without downloading a different pnpm; fallback stays repository-local.
+if [ -n "$EXISTING_PNPM" ]; then
+  if ACTUAL_PNPM_VERSION="$(COREPACK_ENABLE_NETWORK=0 "$EXISTING_PNPM" --version 2>/dev/null)"; then
+    case "$ACTUAL_PNPM_VERSION" in
+      10.*) PNPM="$EXISTING_PNPM" ;;
+      *) printf '기존 pnpm %s: pnpm 10.x가 필요해 저장소 전용 버전을 준비합니다.\n' "$ACTUAL_PNPM_VERSION" ;;
+    esac
+  else
+    printf '기존 pnpm을 실행할 수 없어 저장소 전용 버전을 준비합니다.\n'
+  fi
+fi
+if [ -z "$PNPM" ]; then
+  PNPM="$ROOT/.tools/pnpm/bin/pnpm"
+  if [ ! -x "$PNPM" ] || [ "$("$PNPM" --version)" != "$PNPM_VERSION" ]; then
+    download "https://registry.npmjs.org/pnpm/-/pnpm-$PNPM_VERSION.tgz" "$PNPM_SHA256" "$ROOT/.cache/downloads/pnpm.tgz"
+    mkdir "$TEMP_DIR/pnpm"
+    tar -xzf "$ROOT/.cache/downloads/pnpm.tgz" -C "$TEMP_DIR/pnpm" --strip-components=1
+    [ "$("$NODE" "$TEMP_DIR/pnpm/bin/pnpm.cjs" --version)" = "$PNPM_VERSION" ] || fail '받은 pnpm 버전이 고정 버전과 다릅니다.'
+    ln -s pnpm.cjs "$TEMP_DIR/pnpm/bin/pnpm"
+    if [ -d "$ROOT/.tools/pnpm" ]; then mv "$ROOT/.tools/pnpm" "$TEMP_DIR/previous-pnpm"; fi
+    mv "$TEMP_DIR/pnpm" "$ROOT/.tools/pnpm"
+  fi
 fi
 export PATH="$(dirname "$PNPM"):$(dirname "$UV"):$PATH"
 
@@ -205,7 +219,7 @@ STEP="셸 활성화 파일 생성"
 } > "$ROOT/.tools/runtime.env"
 {
   printf '# 이 저장소 안의 도구와 캐시를 사용합니다. 셸 설정 파일은 수정하지 않습니다.\n'
-  for name in UV_CACHE_DIR UV_PYTHON_INSTALL_DIR UV_PYTHON_BIN_DIR UV_PYTHON_PREFERENCE UV_PROJECT_ENVIRONMENT UV_SYSTEM_CERTS HF_HOME MFLUX_CACHE_DIR TORCH_HOME MPLCONFIGDIR XDG_CACHE_HOME PYTHONPYCACHEPREFIX PLAYWRIGHT_BROWSERS_PATH; do
+  for name in UV_CACHE_DIR UV_PYTHON_INSTALL_DIR UV_PYTHON_BIN_DIR UV_PYTHON_PREFERENCE UV_PROJECT_ENVIRONMENT UV_SYSTEM_CERTS HF_HOME MFLUX_CACHE_DIR TORCH_HOME MPLCONFIGDIR XDG_CACHE_HOME PYTHONPYCACHEPREFIX PLAYWRIGHT_BROWSERS_PATH COREPACK_HOME COREPACK_ENABLE_AUTO_PIN; do
     printf 'export %s=%q\n' "$name" "${!name}"
   done
   # Override the fallback .python-version when an existing Python was selected.
@@ -223,4 +237,4 @@ STEP="Chromium 설치"
 mkdir -p config data/raw data/processed captures stylized corrected output reports web
 STEP="설치 검사"
 bash "$ROOT/scripts/setup.sh" --check
-printf '\n셋업 완료. 현재 터미널에서 다음을 실행하세요:\n  source .tools/activate\n  pnpm run setup:check\n모델을 받을 때: pnpm run setup:model\n'
+printf '\n셋업 완료. 현재 터미널에서 다음을 실행하세요:\n  source .tools/activate\n  pnpm run setup:check\n이어서 수업 전에 모델을 받으세요(약 15GB): pnpm run setup:model\n'

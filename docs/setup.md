@@ -6,8 +6,8 @@
 
 1. macOS·arm64 여부와 기존 설치 소유 기록을 확인합니다.
 2. 고정 uv를 준비하고 기존 Python 3.12를 찾습니다. 없으면 `.python-version`의 버전을 `.tools/python`에 설치합니다.
-3. 기존 arm64 Node.js 22~26을 찾습니다. 없으면 `.node-version`의 버전을 `.tools/node`에 설치합니다.
-4. `package.json`의 `packageManager` 버전의 pnpm을 `.tools/pnpm`에 설치합니다. 기존 pnpm/Corepack은 실행하거나 변경하지 않습니다.
+3. 기존 arm64 Node.js 20.19~26을 찾습니다. 없으면 `.node-version`의 버전을 `.tools/node`에 설치합니다.
+4. 기존 pnpm 10.x를 확인해 재사용합니다. 세부 버전은 고정하지 않습니다. 없거나 실행할 수 없으면 `setup/bootstrap.env`의 대체 버전을 `.tools/pnpm`에 설치합니다. Corepack 확인 중에는 자동 다운로드를 막고 캐시는 저장소 안에 둡니다.
 5. `uv.lock`과 `pnpm-lock.yaml`을 바꾸지 않고 실습 패키지만 설치합니다. `uv sync --no-default-groups`와 `pnpm install --prod`로 실습용 의존성만 설치합니다.
 6. Chromium을 `.cache/playwright`에 설치하고 MFLUX 도움말·Chromium 실행을 확인합니다.
 7. `.tools/activate`를 제공해 현재 셸에서 저장소 전용 경로·캐시를 사용하게 합니다.
@@ -28,13 +28,10 @@ bash scripts/setup.sh --dry-run
 bash scripts/setup.sh
 source .tools/activate
 pnpm run setup:check
-```
-
-모델은 이 명령에 포함되지 않습니다. 수업 전에 별도로 받을 수 있습니다.
-
-```bash
 pnpm run setup:model
 ```
+
+`source .tools/activate`는 현재 터미널이 프로젝트의 도구·캐시 경로를 사용하게 합니다. 새 터미널에서도 저장소로 이동한 뒤 실행하세요. 설치를 반복하는 명령이 아닙니다. 마지막 모델 다운로드까지 수업 전에 완료하세요(약 15GB).
 
 다운로드한 고정 모델은 `.cache/model` 경로로 사용할 수 있습니다. 이 경로는 저장소 안 캐시의 snapshot을 가리킵니다. 모델 캐시·해시 식별 정보는 `reports/model.json`에도 기록합니다.
 
@@ -66,6 +63,7 @@ bash scripts/uninstall.sh --yes
 | 다운로드·인증서 오류                    | 인터넷·방화벽·프록시·조직 인증서 설정 확인 후 같은 셋업 재실행. TLS 검증을 끄지 않음                                            |
 | SHA-256 불일치                          | 받은 파일을 실행하지 않습니다. 공식 출처·고정 해시 확인. 임의로 검사를 끄지 않음                                                |
 | `.setup.lock`이 남음                    | 실행 중인 작업 확인. 모두 종료됐고 강제 종료로 남은 것이면 `rmdir .setup.lock` 후 재실행                                        |
+| pnpm 세부 버전 불일치 | 최신 저장소 설정으로 갱신. pnpm 10.x는 허용하며 패키지 설치는 기존 잠금 파일을 사용 |
 | `pnpm`·`uv`를 못 찾음                   | 저장소에서 `source .tools/activate`를 실행. 도구를 지웠다면 셋업 재실행                                                         |
 | MFLUX import·Chromium 실행 실패         | 오류 전문과 macOS 버전을 기록. `bash scripts/setup.sh` 재실행 후 `--check`. 도구 설치 통과를 이미지 편집 성공으로 간주하지 않음 |
 | 모델 다운로드 실패                      | 네트워크·저장 공간·해당 모델 저장소 권한 확인 후 `pnpm run setup:model` 재실행                                                  |

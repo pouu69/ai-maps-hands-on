@@ -7,7 +7,7 @@
 | uv                       | `setup/bootstrap.env`            | [공식 저장소](https://github.com/astral-sh/uv), [PyPI](https://pypi.org/project/uv/), MIT/Apache-2.0                  |
 | 관리 Python              | `.python-version`                | uv가 제공하는 관리 Python, Python과 배포물의 라이선스·NOTICE 포함                                                     |
 | 대체 설치 Node.js        | `.node-version`                  | [Node 공식 배포](https://nodejs.org/dist/), MIT 및 번들 구성요소 조건                                                 |
-| pnpm                     | `package.json`                   | [공식 저장소](https://github.com/pnpm/pnpm), npm 배포, MIT                                                            |
+| pnpm (기존 10.x 또는 고정 대체 버전) | `setup/bootstrap.env`                   | [공식 저장소](https://github.com/pnpm/pnpm), npm 배포, MIT                                                            |
 | MFLUX·Python 전체 의존성 | `pyproject.toml`, `uv.lock`      | [MFLUX](https://github.com/mflux-community/mflux), 설치 배포물의 라이선스. 각 의존성 조건도 적용                      |
 | three.js                 | `package.json`, `pnpm-lock.yaml` | [three.js](https://github.com/mrdoob/three.js), MIT                                                                   |
 | Playwright·Chromium      | 같은 잠금 파일·브라우저 배포물   | [Playwright](https://github.com/microsoft/playwright), Apache-2.0, Chromium의 별도 구성요소 조건                      |

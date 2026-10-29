@@ -1,17 +1,13 @@
-import { readFile, access } from "node:fs/promises";
+import { access } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
 import { chromium } from "playwright";
 
-const root = fileURLToPath(new URL("../", import.meta.url));
-const pkg = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const actual = execFileSync(process.env.WORKSHOP_PNPM_PATH, ["--version"], {
   encoding: "utf8",
 }).trim();
-if (`pnpm@${actual}` !== pkg.packageManager) {
+if (!/^10\.\d+\.\d+$/.test(actual)) {
   throw new Error(
-    `pnpm ${actual}: packageManager와 다릅니다. 셋업을 재실행하세요.`,
+    `pnpm ${actual}: pnpm 10.x가 필요합니다. bash scripts/setup.sh를 다시 실행하세요.`,
   );
 }
 await access(chromium.executablePath());

@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.34.9",
   "scripts": {
     "setup": "bash scripts/setup.sh",
     "setup:check": "bash scripts/setup.sh --check",
@@ -12,5 +11,9 @@
   "dependencies": {
     "three": "0.186.1",
     "playwright": "1.64.1"
+  },
+  "engines": {
+    "node": ">=20.19.0 <27",
+    "pnpm": ">=10 <11"
   }
 }
