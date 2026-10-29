@@ -1,0 +1,10 @@
+[project]
+name = "ai-neighborhood-workshop"
+version = "0.1.0"
+description = "Repository-based setup for an AI neighborhood map workshop"
+requires-python = ">=3.12,<3.13"
+dependencies = ["mflux==0.24.0"]
+
+
+[tool.uv]
+environments = ["sys_platform == 'darwin' and platform_machine == 'arm64'"]
