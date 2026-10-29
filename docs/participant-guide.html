@@ -8,7 +8,7 @@
       content="각자 자기 동네의 1km 범위 OSM·Overture를 수집하고 AI와 코딩해 그림 웹 지도를 만드는 참가자 가이드"
     />
     <title>AI와 만드는 우리 동네 지도 · 참가자 가이드</title>
-    <!-- Generated from participant-guide.md; source SHA-256: ee6ff9696b2b3dbd70b32c5a95fb729550a33b3b585488834f4329e0f7facf03. Edit the Markdown source before regenerating. -->
+    <!-- Generated from participant-guide.md; source SHA-256: 8438f64c89225be034d1b16d769ebe0d9666edd52468ced2b591b861d49dc4f2. Edit the Markdown source before regenerating. -->
     <style>
       :root {
         color-scheme: light;
@@ -378,19 +378,19 @@
 <a href="#section-2">시작 전에 읽기</a>
 <a href="#section-5">준비물 확인</a>
 <a href="#section-6">0. 공유 저장소 셋업하고 같은 폴더에서 시작하기</a>
-<a href="#section-10">1. 동네 범위를 정하고 데이터를 수집하기</a>
-<a href="#section-16">2. 데이터를 정리하고 bin 만들기</a>
-<a href="#section-20">3. 도시를 그리고 PNG로 촬영하기</a>
-<a href="#section-24">4. MFLUX로 화풍 바꾸기</a>
-<a href="#section-31">5. 결과를 확인하고 필요한 보정만 적용하기</a>
-<a href="#section-35">6. 이미지를 합치고 지도 타일 만들기</a>
-<a href="#section-39">7. 선택 과제: 불빛으로 야경 만들기</a>
-<a href="#section-43">8. 브라우저에서 지도 완성하기</a>
-<a href="#section-47">9. 선택 과제: 인터넷에 공개하기</a>
-<a href="#section-51">실습이 끝나면 설치 항목 정리하기</a>
-<a href="#section-52">막혔을 때 AI에게 전달할 형식</a>
-<a href="#section-53">마지막 제출 체크리스트</a>
-<a href="#section-54">참고 자료</a></details></nav>
+<a href="#section-11">1. 동네 범위를 정하고 데이터를 수집하기</a>
+<a href="#section-17">2. 데이터를 정리하고 bin 만들기</a>
+<a href="#section-21">3. 도시를 그리고 PNG로 촬영하기</a>
+<a href="#section-25">4. MFLUX로 화풍 바꾸기</a>
+<a href="#section-32">5. 결과를 확인하고 필요한 보정만 적용하기</a>
+<a href="#section-36">6. 이미지를 합치고 지도 타일 만들기</a>
+<a href="#section-40">7. 선택 과제: 불빛으로 야경 만들기</a>
+<a href="#section-44">8. 브라우저에서 지도 완성하기</a>
+<a href="#section-48">9. 선택 과제: 인터넷에 공개하기</a>
+<a href="#section-52">실습이 끝나면 설치 항목 정리하기</a>
+<a href="#section-53">막혔을 때 AI에게 전달할 형식</a>
+<a href="#section-54">마지막 제출 체크리스트</a>
+<a href="#section-55">참고 자료</a></details></nav>
       <main id="guide"><div class="document-label">AI NEIGHBORHOOD WORKSHOP</div><h1>AI와 만드는 우리 동네 지도</h1>
 <p>각자 자신이 사는 동네에서 가로 1km × 세로 1km 구역을 고르고, AI가 작성한 수집 코드를 실행해 그 구역의 OSM·Overture 데이터를 받습니다. 수집한 지도를 입체로 그리고 화풍을 입힌 뒤 브라우저에서 이동·확대하는 지도로 완성합니다.</p>
 <p>이 실습에서는 공유받은 저장소에서 <strong>AI와 코드를 만들고 직접 실행합니다.</strong> 지도 제작 완성 코드는 제공하지 않습니다. 기본 목표는 로컬에서 이동·확대할 수 있는 낮 지도입니다. 야경·실제 지형·인터넷 공개는 선택 과제입니다.</p>
@@ -433,9 +433,6 @@
 <p>OSM 화면에서는 <strong>동네 중심 좌표만 고르면 됩니다.</strong> 건물·도로 추출은 AI가 작성한 코드가 수행합니다. 실행 기능이 있는 코딩 AI에는 명령 실행도 맡길 수 있습니다. 장소와 화풍이 맞는지 확인하는 일은 참가자가 합니다.</p>
 <p><strong>AI 요청문은 코딩 AI에 복사해 보낼 작업 지시입니다.</strong> 요청문 앞의 설명에서 무엇을 만들지 확인하고, 대괄호가 있으면 내 좌표·화풍·관찰 결과로 바꾸세요. AI가 실제 파일과 코드를 작성한 뒤 실행합니다.</p>
 <p><strong>‘실행’ 블록은 바로 위 요청문으로 코드를 만든 뒤 사용하세요.</strong> 설치·모델 준비 명령을 제외한 실습 명령은 처음부터 저장소에 들어 있지 않습니다. 터미널 환경을 준비하는 방법은 아래 0단계에서 설명합니다.</p>
-<h3 id="section-4">현재 확인된 범위</h3>
-<p>설치·삭제·재설치와 MFLUX 명령 도움말·Chromium 실행은 확인했습니다. <strong>지도 수집부터 최종 웹 지도까지의 완주와 MFLUX 이미지 편집은 아직 검증하지 않았습니다.</strong> 따라서 현재 문서는 진행자와 함께 구현하는 실습 초안입니다. 수업 시간과 완료 가능 여부는 실제 동네 한 곳으로 리허설한 뒤 확정해야 합니다.</p>
-<p>모델은 약 15GB이므로 수업 전에 받는 편이 좋습니다. 이 실습은 추가 학습·클라우드 GPU·유료 이미지 API를 사용하지 않습니다.</p>
 <h2 id="section-5">준비물 확인</h2>
 <p>모델 파일은 약 15GB입니다. 셋업 도구와 모델을 받을 저장 공간을 확보하세요. 로컬 이미지 편집 속도와 메모리 여유는 4단계에서 실제로 시험합니다. 기기 정보를 AI에 미리 입력하거나 별도 파일에 기록할 필요는 없습니다.</p>
 <table>
@@ -536,7 +533,7 @@
 </tbody></table>
 <p>설치 환경은 마지막 단계의 삭제 명령으로 정리합니다. 기존 전역 도구와 실습 결과는 남습니다. 자세한 설치·복구 방법은 저장소의 <code>docs/setup.md</code>를 참고하세요.</p>
 <h3 id="section-9">AI 요청문 — 실행 도우미와 프로젝트 맥락 만들기</h3>
-<p>Codex CLI는 명령마다 별도 셸에서 실행할 수 있어 터미널 환경 설정이 이어지지 않을 수 있습니다. 아래 요청은 AI가 매 명령에 프로젝트 환경을 적용하는 <code>scripts/run.sh</code>와, 새 대화에서 목표와 진행 단계를 이어갈 <code>progress.md</code>를 만들게 합니다.</p>
+<p>Codex CLI는 명령마다 별도 셸에서 실행할 수 있어 터미널 환경 설정이 이어지지 않을 수 있습니다. 아래 요청은 매 명령에 프로젝트 환경을 적용하는 <code>scripts/run.sh</code>와, 새 대화에서 목표와 진행 단계를 이어갈 <code>progress.md</code>를 준비합니다. 이 요청에서는 도구를 다시 설치하거나 모델을 다운로드하지 않습니다.</p>
 <pre><code class="language-text">README.md, AGENTS.md, docs/participant-guide.md를 읽고 저장소 규칙과 실습 목표를 파악해.
 Codex CLI와 터미널에서 매 명령에 프로젝트 환경을 적용하도록 scripts/run.sh를 만들어.
 스크립트는 bash로 실행하고, 저장소 경로를 찾아 그 위치로 이동해.
@@ -548,26 +545,40 @@ README와 가이드를 기준으로 프로젝트 목표, AI와 참가자의 역�
 짧게 progress.md에 정리해. 새 AI 대화는 이 파일과 가이드의 현재 단계를 읽고,
 단계가 끝나면 실제로 확인한 결과만 갱신하게 적어. 참가자에게 별도 정보를 묻지 마.
 
-스크립트를 만든 뒤 모델이 이미 준비됐는지 확인해.
-reports/model.json의 저장소·리비전이 setup/model.json과 같고,
-.cache/model이 보고서의 실제 모델 폴더를 가리키면 다시 다운로드하지 마.
-모델이 없다면 bash scripts/run.sh pnpm run setup:model로 받아.
-progress.md에는 확인된 설치·모델 상태와 다음 단계를 기록해.
-다운로드가 실패하면 원인을 기록하고 성공한 것처럼 표시하지 마.
+progress.md에는 기본 도구 설치가 끝났고 다음 단계에서 이미지 편집 모델을 준비한다고 기록해.
 지도 코드는 아직 작성하지 마.
 </code></pre>
-<p>모델 다운로드까지 성공하면 실습 준비가 끝납니다. 그다음 1단계에서 OpenStreetMap을 열고 동네와 중심 좌표를 정합니다. 새 터미널에서도 <code>source</code>를 따로 실행하지 않고 <code>bash scripts/run.sh &lt;명령과 인자&gt;</code>를 사용합니다.</p>
-<h2 id="section-10">1. 동네 범위를 정하고 데이터를 수집하기</h2>
+<h3 id="section-10">AI 요청문 — 이미지 편집 모델 준비</h3>
+<p>이 모델은 뒤의 4단계에서 촬영한 지도 이미지를 원하는 화풍으로 편집할 때 MFLUX가 사용하는 이미지 생성 모델입니다. 약 15GB의 모델 파일을 이 저장소에 받아 두며, 이 단계에서는 이미지를 편집하지 않습니다. 준비된 모델이 있으면 재사용하고, 없을 때만 다운로드합니다.</p>
+<pre><code class="language-text">README.md, AGENTS.md, docs/participant-guide.md, progress.md를 읽고 현재 단계를 확인해.
+이 단계는 4단계의 지도 이미지 편집에 사용할 FLUX.2 klein 4B 모델을 준비하는 작업이야.
+모델을 학습하거나 이미지를 편집하지 말고, 저장소 안에 모델 파일만 준비해.
+
+먼저 setup/model.json의 저장소와 리비전을 확인해.
+실행 전에 참가자에게 이 모델이 4단계 이미지 편집에 쓰이고 약 15GB를 다운로드하며,
+이 단계에서는 이미지를 편집하지 않는다고 설명해.
+reports/model.json이 같은 저장소·리비전을 가리키고,
+.cache/model이 보고서의 실제 모델 폴더를 가리키며 그 폴더가 있으면 이미 준비된 거야.
+이미 준비되어 있으면 다운로드를 건너뛰어.
+없거나 일치하지 않으면 참가자에게 약 15GB 다운로드를 안내하고
+bash scripts/run.sh pnpm run setup:model을 실행해.
+다운로드 실패 시 원인과 해결 방법을 기록하고 성공으로 표시하지 마.
+
+확인한 모델 준비 상태와 다음 단계만 progress.md에 반영해.
+지도 데이터 수집이나 지도 코드는 아직 작성하지 마.
+</code></pre>
+<p>모델 준비가 끝나면 실습 환경과 이미지 편집 모델이 준비된 것입니다. 다음 1단계에서 OpenStreetMap을 열고 동네와 중심 좌표를 정합니다. 새 터미널에서도 <code>source</code>를 따로 실행하지 않고 <code>bash scripts/run.sh &lt;명령과 인자&gt;</code>를 사용합니다.</p>
+<h2 id="section-11">1. 동네 범위를 정하고 데이터를 수집하기</h2>
 <p><strong>목표:</strong> 내 동네의 1km 사각형을 확정하고, 같은 구역의 OSM·Overture 원본을 확보해 위치를 비교합니다.</p>
 <p><strong>결과물:</strong> 구역 설정, 출처별 원본 데이터, 범위·수집 결과 미리보기</p>
-<h3 id="section-11">참가자가 할 일</h3>
+<h3 id="section-12">참가자가 할 일</h3>
 <ol>
 <li><a href="https://www.openstreetmap.org/">OpenStreetMap</a>에서 만들고 싶은 동네를 찾으세요.</li>
 <li>중심점을 우클릭해 ‘주소 보기 / Show address’ 등으로 위도·경도를 확인하세요. 메뉴가 다르면 지도 중심을 맞춘 뒤 URL의 <code>#map=확대율/위도/경도</code>에서 읽을 수 있습니다.</li>
 <li>위도와 경도를 구분해 아래 요청문에 넣으세요. 기본 지형은 평면으로 시작합니다.</li>
 </ol>
 <p>지도 파일을 웹사이트에서 미리 내려받을 필요는 없습니다. AI에게 수집 코드를 작성하게 한 뒤, 참가자가 실행 명령을 실행해 자료를 받습니다. 다음 작업을 <strong>하나씩</strong> 진행하세요.</p>
-<h3 id="section-12">1-1. 범위 미리보기</h3>
+<h3 id="section-13">1-1. 범위 미리보기</h3>
 <p><strong>목표:</strong> 데이터를 받기 전에 중심점과 1km 사각형이 원하는 곳인지 확인합니다.</p>
 <p><strong>AI 요청문 설명:</strong> 좌표를 구역 설정 파일로 저장하고, 수집 없이도 열리는 범위 미리보기를 만드는 요청입니다.</p>
 <pre><code class="language-text">동네 이름은 [동네 이름], 중심 위도는 [위도], 경도는 [경도]야.
@@ -581,11 +592,11 @@ scripts/collect.py --config config/workshop.json --preview를 구현해.
 로컬 파일 내용을 HTML에 포함해 파일 열기로 볼 수 있게 하고,
 배경 지도가 인터넷을 쓴다면 연결이 필요함을 알려줘. 여는 방법도 안내해.
 </code></pre>
-<h3 id="section-13">실행</h3>
+<h3 id="section-14">실행</h3>
 <pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/collect.py --config config/workshop.json --preview
 </code></pre>
 <p><code>reports/area.html</code>을 브라우저에서 열어 내가 고른 동네와 1km 사각형인지 확인하세요. 틀리면 좌표부터 수정합니다.</p>
-<h3 id="section-14">1-2. OSM 수집</h3>
+<h3 id="section-15">1-2. OSM 수집</h3>
 <p><strong>목표:</strong> 확정한 구역의 건물·도로·물·공원을 OSM에서 받아 지도에 표시합니다.</p>
 <p><strong>AI 요청문 설명:</strong> 앞서 만든 collect.py가 Overpass API에서 OSM 자료를 받아 저장하고 미리보기로 보여주도록 코드를 추가하는 요청입니다. 이 요청문만 보내서는 자료가 내려받아지지 않습니다.</p>
 <pre><code class="language-text">같은 collect.py에 --source osm을 추가해.
@@ -604,7 +615,7 @@ reports/collection.html에 범위와 OSM 결과를 겹쳐 보여줘.
 </code></pre>
 <p>위 명령을 실행하면 collect.py가 내가 고른 구역의 OSM 자료를 받아 <code>data/raw/</code>에 저장합니다. 참가자는 실행 결과를 확인합니다. 직접 OSM 파일을 찾아 내려받을 필요는 없습니다.</p>
 <p>미리보기에서 익숙한 건물·도로가 같은 위치에 있는지 확인하세요. 서버 요청이 계속 실패하면 <a href="https://download.geofabrik.de/asia/south-korea.html">지역 PBF</a>에서 추출하는 방식으로 AI와 수집 코드를 바꿉니다. PBF는 별도 다운로드·추출 시간이 필요합니다.</p>
-<h3 id="section-15">1-3. Overture 건물 수집</h3>
+<h3 id="section-16">1-3. Overture 건물 수집</h3>
 <p><strong>목표:</strong> OSM과 비교할 같은 구역의 Overture 건물을 확보합니다. 중복 제거와 실제 보완은 2단계에서 합니다.</p>
 <p><strong>AI 요청문 설명:</strong> 같은 수집 코드에 Overture 건물 추출을 추가하고, 두 출처를 켜고 끄며 비교하게 하는 요청입니다.</p>
 <pre><code class="language-text">collect.py에 --source overture를 추가해.
@@ -632,12 +643,12 @@ reports/collection.html에서 OSM과 Overture를 각각 켜고 끄며 비교하�
 <p>자료가 없다면 평면과 임시 높이로 기본 실습을 계속합니다.</p>
 </details>
 
-<h2 id="section-16">2. 데이터를 정리하고 bin 만들기</h2>
+<h2 id="section-17">2. 데이터를 정리하고 bin 만들기</h2>
 <p><strong>목표:</strong> 서로 다른 지도 자료의 좌표·건물 중복·높이를 정리해, three.js 엔진이 읽을 하나의 bin 파일로 굽습니다(bake).</p>
 <p><strong>결과물:</strong> <code>data/processed/neighborhood.bin</code>, 파일 구조 설명, Python·JavaScript 로더와 읽기 확인 결과</p>
-<h3 id="section-17">참가자가 할 일</h3>
+<h3 id="section-18">참가자가 할 일</h3>
 <p>아래 요청문을 전달하고 변환 명령을 실행하세요. 건물 몇 개의 높이와 실제값·임시값 구분을 확인합니다. <strong>bin은 지도 표준이 아닙니다.</strong> AI가 이 프로젝트의 파일 구조와 로더를 함께 만듭니다.</p>
-<h3 id="section-18">AI 요청문 — 지도 데이터 정리와 bin 변환 코드 작성</h3>
+<h3 id="section-19">AI 요청문 — 지도 데이터 정리와 bin 변환 코드 작성</h3>
 <p>1단계 원본을 읽어 좌표·중복·높이를 정리하는 bake 코드와, 그 결과를 Python·브라우저에서 읽는 로더를 만들어 달라는 요청입니다.</p>
 <pre><code class="language-text">수집한 실제 파일을 읽어 1km 구역의 엔진용 데이터를 만들어줘.
 scripts/bake.py --config config/workshop.json 으로 실행하게 해.
@@ -662,16 +673,16 @@ Python/JS에서 같은 개수·기준점·높이가 읽히는지 대조해.
 reports/bake.md에 중복·보완·임시 높이 개수와 건물 ID별 높이·근거 표본을 보여줘.
 높이를 클릭해 확인할 지도 미리보기도 제공해. 중복 판정 기준과 애매한 후보를 기록해.
 </code></pre>
-<h3 id="section-19">실행</h3>
+<h3 id="section-20">실행</h3>
 <pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/bake.py --config config/workshop.json
 bash scripts/run.sh uv run --locked python scripts/check_bin.py
 bash scripts/run.sh pnpm run check:bin
 </code></pre>
 <p><strong>완료 기준:</strong> Python과 JavaScript가 같은 데이터를 읽습니다. 잘못된 높이가 없는지 몇 개 건물을 확인했고, 임시 높이의 개수를 알고 있습니다. 원본과 정리 파일은 분리돼 있습니다.</p>
-<h2 id="section-20">3. 도시를 그리고 PNG로 촬영하기</h2>
+<h2 id="section-21">3. 도시를 그리고 PNG로 촬영하기</h2>
 <p><strong>목표:</strong> bin으로 동네의 입체 지도를 띄우고 카메라를 확정한 뒤, 화풍 변환을 시험할 이웃 PNG 3장을 촬영합니다.</p>
 <p><strong>결과물:</strong> three.js 화면, 전체 촬영 위치 목록, 시험 PNG 3장과 대표 이미지 <code>captures/pilot.png</code></p>
-<h3 id="section-21">참가자가 할 일</h3>
+<h3 id="section-22">참가자가 할 일</h3>
 <p>아래 요청문으로 엔진을 만든 뒤 브라우저에서 동네가 맞는지 확인합니다. 미리보기에서 카메라 방향을 정해 AI에게 전달하고, 시험 촬영 3장을 실행해 이웃 이미지가 이어지는지 확인합니다.</p>
 <table>
 <thead>
@@ -698,7 +709,7 @@ bash scripts/run.sh pnpm run check:bin
 </tr>
 </tbody></table>
 <p>정면으로 내려다보는 1km 사각형은 이 설정에서 5×5장으로 덮을 수 있습니다. 비스듬한 시점에서는 장수가 달라지므로 AI가 실제 투영 범위로 계산해야 합니다. 25장을 고정값으로 쓰지 않습니다.</p>
-<h3 id="section-22">AI 요청문 — 입체 지도와 시험 촬영 코드 작성</h3>
+<h3 id="section-23">AI 요청문 — 입체 지도와 시험 촬영 코드 작성</h3>
 <p>bin을 화면에 그리는 엔진과 Playwright 촬영 코드를 만들어 달라는 요청입니다. 이 단계에서는 이웃 3장만 찍고, 전체 촬영은 4단계 시험 후에 합니다.</p>
 <pre><code class="language-text">three.js로 bin의 건물 하나부터 표시한 뒤 도로·물·공원을 추가해.
 지형은 config에 선택한 방식으로 처리해.
@@ -726,7 +737,7 @@ pnpm run capture:pilot은 이 3장, pnpm run capture:all은 전체를 찍게 해
 고정 sleep으로 동기화하지 마. UI와 움직이는 요소는 촬영에서 제외해.
 원본 PNG는 captures/에 저장하고 장수·시간·치수·겹침 검사를 reports/capture.md에 남겨.
 </code></pre>
-<h3 id="section-23">실행</h3>
+<h3 id="section-24">실행</h3>
 <p>첫 터미널에서 서버를 켜세요. 이 터미널은 켜 둡니다.</p>
 <pre><code class="language-bash">bash scripts/run.sh pnpm run dev
 </code></pre>
@@ -735,19 +746,19 @@ pnpm run capture:pilot은 이 3장, pnpm run capture:all은 전체를 찍게 해
 </code></pre>
 <p><strong>완료 기준:</strong> PNG 3장이 모두 1024×1024입니다. 가로 이웃은 오른쪽·왼쪽 256px, 세로 이웃은 아래·위 256px에서 같은 대상이 일치합니다. 지도 위치·높이·방향이 정상입니다.</p>
 <p>전체 촬영은 다음 단계의 3장 화풍 시험을 통과한 뒤 진행합니다.</p>
-<h2 id="section-24">4. MFLUX로 화풍 바꾸기</h2>
+<h2 id="section-25">4. MFLUX로 화풍 바꾸기</h2>
 <p><strong>목표:</strong> 촬영한 PNG를 원하는 화풍으로 편집하고, 이웃 3장의 형태·연결·처리 시간을 확인한 뒤 전체 타일을 변환합니다.</p>
 <p><strong>결과물:</strong> 시험·전체 편집 이미지, 사용한 설정과 처리 시간 기록</p>
-<h3 id="section-25">참가자가 할 일</h3>
+<h3 id="section-26">참가자가 할 일</h3>
 <p>원하는 화풍을 문장으로 정하고 아래 명령의 프롬프트에 넣습니다. 한 장 → 이웃 3장 순으로 실행해 형태·연결·처리 시간을 확인한 뒤 전체 처리 여부를 결정합니다.</p>
-<h3 id="section-26">4-1. 준비한 모델과 편집 명령 확인</h3>
+<h3 id="section-27">4-1. 준비한 모델과 편집 명령 확인</h3>
 <p><strong>목표:</strong> 0단계에서 받은 모델을 사용할 수 있는지와 이미지 편집 명령의 옵션을 확인합니다.</p>
 <p>0단계에서 받은 <code>.cache/model</code>을 그대로 사용합니다. 다운로드를 마치지 못했다면 <code>bash scripts/run.sh pnpm run setup:model</code>로 먼저 완료하세요.</p>
 <pre><code class="language-bash">bash scripts/run.sh uv run --locked mflux-generate-flux2-edit --help
 mkdir -p stylized
 </code></pre>
 <p>실패하면 오류 전문을 AI에 전달하세요. 설치된 명령의 <code>--help</code>와 셋업 가이드를 기준으로 해결합니다.</p>
-<h3 id="section-27">4-2. 한 장 편집</h3>
+<h3 id="section-28">4-2. 한 장 편집</h3>
 <p><strong>목표:</strong> 내 맥에서 대표 PNG 한 장을 실제로 편집해 결과 파일이 생기고 원본의 지도 형태가 유지되는지 확인합니다.</p>
 <p><code>--prompt</code>의 문장을 원하는 화풍으로 바꿔 실행하세요. 영어가 어렵다면 AI에 문장 작성을 맡기세요. 입력은 3단계에서 만든 대표 이미지 <code>captures/pilot.png</code>입니다.</p>
 <pre><code class="language-bash">bash scripts/run.sh uv run --locked mflux-generate-flux2-edit \
@@ -765,10 +776,10 @@ mkdir -p stylized
 </code></pre>
 <p>추가 학습이나 편집 LoRA는 사용하지 않습니다. <code>flux2-klein-4b</code>는 4스텝으로 편집하는 증류 모델이며, 원작의 base+LoRA 조합과 다릅니다. 지시문만으로 형태 보존이 보장되지는 않습니다.</p>
 <p><strong>완료 기준:</strong> 원본을 덮어쓰지 않고 <code>stylized/cli-test.png</code>가 생깁니다. 건물·도로·하천의 위치와 형태를 원본과 비교하세요.</p>
-<h3 id="section-28">4-3. 3장 연속 시험과 전체 처리</h3>
+<h3 id="section-29">4-3. 3장 연속 시험과 전체 처리</h3>
 <p><strong>목표:</strong> 이웃 3장을 연속 편집해 연결 상태와 소요 시간을 판단하고, 통과하면 전체 촬영·편집을 완료합니다.</p>
 <p>명령을 세 번 따로 실행하면 모델 로딩도 반복됩니다. AI에게 모델을 한 번만 읽고 3장을 연속 편집하는 실행기를 요청하세요.</p>
-<h3 id="section-29">AI 요청문 — 모델을 한 번 로드하는 연속 편집 코드 작성</h3>
+<h3 id="section-30">AI 요청문 — 모델을 한 번 로드하는 연속 편집 코드 작성</h3>
 <p>한 장 편집이 성공한 뒤 보내세요. 같은 모델을 매번 다시 읽지 않고 시험 3장 또는 전체 타일을 순서대로 편집하는 실행기를 만드는 요청입니다.</p>
 <pre><code class="language-text">현재 설치한 mflux 0.24.0의 Flux2KleinEdit 공식 Python API를 확인해.
 위 CLI와 같은 .cache/model의 고정 모델·해상도·양자화·스텝·guidance·화풍으로
@@ -786,7 +797,7 @@ pilot용 별도 출력으로 원본 3장을 모두 처리해 비교하게 해.
 reports/stylize.md에 설정·시드·모델 식별 정보·결과 경로·시간·오류를 남겨.
 메모리가 부족하면 설치 버전이 지원하는 저메모리 옵션을 먼저 확인해.
 </code></pre>
-<h3 id="section-30">실행</h3>
+<h3 id="section-31">실행</h3>
 <pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/stylize.py --pilot
 </code></pre>
 <p><strong>진행 판단:</strong> 이웃 3장의 구조·연결이 유지되고 처리 시간이 수업에 맞으면 전체로 확대합니다.</p>
@@ -796,12 +807,12 @@ reports/stylize.md에 설정·시드·모델 식별 정보·결과 경로·시�
 bash scripts/run.sh uv run --locked python scripts/stylize.py --all
 </code></pre>
 <p>예상 편집 시간은 <strong>실제 장수 × 연속 처리의 평균 장당 시간</strong>입니다. 예를 들어 25장이 장당 1분이면 25분이며 다운로드·로딩·재시도는 별도입니다. 이것은 측정 결과가 아닌 계산 예시입니다.</p>
-<h2 id="section-31">5. 결과를 확인하고 필요한 보정만 적용하기</h2>
+<h2 id="section-32">5. 결과를 확인하고 필요한 보정만 적용하기</h2>
 <p><strong>목표:</strong> 원본과 변환 이미지를 비교해 사용할 결과를 정하고, 필요한 부분만 보정해 합성 단계의 입력을 확정합니다.</p>
 <p><strong>결과물:</strong> 비교 화면, 필요한 경우 보정 이미지, 타일별 최종 입력 목록 <code>reports/selected-images.json</code></p>
-<h3 id="section-32">참가자가 할 일</h3>
+<h3 id="section-33">참가자가 할 일</h3>
 <p>먼저 AI가 만든 원본·변환 비교 화면을 보고 아래 표에서 해당하는 문제를 고릅니다. 문제 위치와 증상을 AI에 전달하고, 보정 전후를 본 뒤 사용할 이미지를 결정합니다.</p>
-<h3 id="section-33">AI 요청문 — 보정 여부를 판단할 비교 화면 만들기</h3>
+<h3 id="section-34">AI 요청문 — 보정 여부를 판단할 비교 화면 만들기</h3>
 <p>어디가 잘못됐는지 참가자가 먼저 볼 수 있도록 원본·변환 결과와 타일 연결부를 비교하는 화면을 요청합니다. 이 요청으로는 이미지를 보정하지 않습니다.</p>
 <pre><code class="language-text">원본과 화풍 변환 이미지를 나란히 보고 이웃 타일의 연결부도 확인할 수 있는
 미리보기를 만들어줘. 실제 입력 경로와 화면을 여는 명령·주소를 알려줘.
@@ -843,7 +854,7 @@ bash scripts/run.sh uv run --locked python scripts/stylize.py --all
 <td>부분 재편집·패치. 배경이 유지되고 결과가 밀렸을 때 ECC 정합 검토</td>
 </tr>
 </tbody></table>
-<h3 id="section-34">AI 요청문 — 관찰한 문제 보정과 최종 입력 확정</h3>
+<h3 id="section-35">AI 요청문 — 관찰한 문제 보정과 최종 입력 확정</h3>
 <p>비교 화면에서 발견한 문제를 넣어 보내세요. 선택한 보정만 구현하고, 문제가 없으면 기존 결과를 그대로 다음 합성 단계에 연결하는 요청입니다.</p>
 <pre><code class="language-text">비교 화면에서 내가 확인한 문제를 기준으로 작업해.
 reports/quality.md에 구조 오류·색 차이·물/숲·지형·중요 장소 문제를 나눠 기록해.
@@ -861,12 +872,12 @@ reports/selected-images.json에 타일 ID→최종 이미지 경로를 기록해
 원본을 쓰는 타일은 그렇게 표시하고 CLI 시험 이미지·중복 사본은 제외해.
 </code></pre>
 <p><strong>완료 기준:</strong> 적용한 보정과 생략한 보정의 이유를 설명할 수 있습니다. 최종 입력 목록에 실제 파일이 있고, 누락·치수 오류가 없습니다.</p>
-<h2 id="section-35">6. 이미지를 합치고 지도 타일 만들기</h2>
+<h2 id="section-36">6. 이미지를 합치고 지도 타일 만들기</h2>
 <p><strong>목표:</strong> 확정한 이미지를 촬영 위치에 맞춰 한 지도로 합성하고, 브라우저가 확대율에 따라 읽을 해상도별 타일로 나눕니다.</p>
 <p><strong>결과물:</strong> 전체 보기 <code>output/overview.png</code>, 768px WebP 타일, 타일 설명 파일 <code>output/manifest.json</code></p>
-<h3 id="section-36">참가자가 할 일</h3>
+<h3 id="section-37">참가자가 할 일</h3>
 <p>AI에게 합성·타일 생성을 요청한 뒤 실행하세요. 전체 보기에서 도로 연결·이중 건물·색 경계를 확인합니다.</p>
-<h3 id="section-37">AI 요청문 — 이미지 합성과 해상도별 타일 생성 코드 작성</h3>
+<h3 id="section-38">AI 요청문 — 이미지 합성과 해상도별 타일 생성 코드 작성</h3>
 <p>5단계에서 정한 이미지를 겹침 위치에 맞춰 합성하고, 웹 지도가 필요한 부분만 읽도록 타일과 manifest를 만드는 요청입니다.</p>
 <pre><code class="language-text">scripts/build_pyramid.py를 만들어줘.
 data/tiles.json과 reports/selected-images.json의 실제 최종 파일을 사용해.
@@ -889,17 +900,17 @@ output/tiles/ 아래에 저장하고 output/manifest.json에
 파일을 모두 쓴 뒤 manifest를 완성하고, 입력이 빠졌으면 완료로 처리하지 마.
 reports/pyramid.md에 누락·파일 치수·겹침·투명 경계 검사 결과를 남겨.
 </code></pre>
-<h3 id="section-38">실행</h3>
+<h3 id="section-39">실행</h3>
 <pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/build_pyramid.py
 </code></pre>
 <p><strong>완료 기준:</strong> <code>output/overview.png</code>에서 도로가 이어지고 이중 건물이 두드러지지 않습니다. 모든 WebP 타일은 768×768px이며, 경계 밖은 투명합니다. 필요한 라이브러리의 WebP 저장 지원을 실제로 확인합니다.</p>
 <p>완성 이미지 한 장이 목표라면 여기서 마칠 수 있습니다. 웹 지도를 만들려면 <strong>8단계</strong>로 가세요. <strong>7단계는 선택 과제</strong>입니다.</p>
-<h2 id="section-39">7. 선택 과제: 불빛으로 야경 만들기</h2>
+<h2 id="section-40">7. 선택 과제: 불빛으로 야경 만들기</h2>
 <p><strong>목표:</strong> 건물 위치·높이로 가상의 창문 불빛을 만들고, 낮 지도와 같은 위치에 겹칠 수 있는 불빛 타일을 준비합니다.</p>
 <p><strong>결과물:</strong> <code>output/lights/</code>의 불빛 타일과 manifest의 불빛 경로</p>
-<h3 id="section-40">참가자가 할 일</h3>
+<h3 id="section-41">참가자가 할 일</h3>
 <p>야경을 선택했다면 시험 구역부터 만드세요. 불빛이 건물 밖으로 새지 않는지 확인한 뒤 전체로 확대합니다.</p>
-<h3 id="section-41">AI 요청문 — 건물 기반 불빛 생성 코드 작성</h3>
+<h3 id="section-42">AI 요청문 — 건물 기반 불빛 생성 코드 작성</h3>
 <p>낮 이미지를 다시 AI로 그리는 작업이 아닙니다. bin의 건물 정보로 불빛을 계산하고 낮 지도와 같은 격자의 타일로 저장하는 코드를 요청합니다.</p>
 <pre><code class="language-text">야경용 scripts/lights.py를 작은 구역부터 구현해.
 --pilot은 시험 구역, --all은 전체 구역을 처리하게 해.
@@ -915,7 +926,7 @@ bin의 건물 외곽선·높이·ID와 공통 카메라로 보이는 벽을 계�
 축소 시 과한 밝기·불빛 소실도 확인해.
 뷰어용 manifest에 불빛 경로를 추가하고 reports/lights.md에 결과를 남겨.
 </code></pre>
-<h3 id="section-42">실행</h3>
+<h3 id="section-43">실행</h3>
 <p>먼저 시험 구역만 실행하세요.</p>
 <pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/lights.py --pilot
 </code></pre>
@@ -923,12 +934,12 @@ bin의 건물 외곽선·높이·ID와 공통 카메라로 보이는 벽을 계�
 <pre><code class="language-bash">bash scripts/run.sh uv run --locked python scripts/lights.py --all
 </code></pre>
 <p>낮 그림이나 패치를 고치면 영향을 받은 불빛도 다시 확인합니다.</p>
-<h2 id="section-43">8. 브라우저에서 지도 완성하기</h2>
+<h2 id="section-44">8. 브라우저에서 지도 완성하기</h2>
 <p><strong>목표:</strong> 낮 타일을 엔진 화면과 같은 위치에 표시하고, 브라우저에서 이동·확대할 수 있는 로컬 지도를 완성합니다.</p>
 <p><strong>결과물:</strong> <code>http://localhost:5173</code>에서 사용하는 지도와 출처 표시. 야경을 선택했다면 불빛 합성도 포함</p>
-<h3 id="section-44">참가자가 할 일</h3>
+<h3 id="section-45">참가자가 할 일</h3>
 <p>AI에게 뷰어를 요청한 뒤 서버를 실행하세요. 브라우저에서 직접 이동·확대·새로고침해 봅니다.</p>
-<h3 id="section-45">AI 요청문 — 타일을 합성하는 웹 지도 뷰어 작성</h3>
+<h3 id="section-46">AI 요청문 — 타일을 합성하는 웹 지도 뷰어 작성</h3>
 <p>6단계 타일과 manifest를 읽어 엔진 화면에 맞춰 표시하고, 이동·확대를 함께 처리하는 코드를 요청합니다.</p>
 <pre><code class="language-text">로컬 엔진에 타일 표시 코드를 추가해. 원작 paint.mjs와 같은 역할이야.
 output/manifest.json을 읽고 한 장부터 엔진의 같은 위치에 겹쳐 보여줘.
@@ -949,7 +960,7 @@ sources.md에서 실제 사용한 출처와 필요한 고지를 읽어 화면에
 README에 시작·종료·재생성 방법, reports/viewer.md에 검증 결과를 남겨.
 R2 업로드·공개 배포는 아직 수행하지 마.
 </code></pre>
-<h3 id="section-46">실행</h3>
+<h3 id="section-47">실행</h3>
 <p>서버가 이미 켜져 있으면 같은 포트로 다시 실행하지 말고 기존 서버를 사용하세요.</p>
 <pre><code class="language-bash">bash scripts/run.sh pnpm run dev
 </code></pre>
@@ -964,13 +975,13 @@ R2 업로드·공개 배포는 아직 수행하지 마.
 <li><input disabled="" type="checkbox"> 실제 데이터·모델·도구에 필요한 출처 표시가 있습니다.</li>
 </ul>
 <p>서버를 종료하려면 실행 중인 터미널에서 <code>Ctrl+C</code>를 누릅니다.</p>
-<h2 id="section-47">9. 선택 과제: 인터넷에 공개하기</h2>
+<h2 id="section-48">9. 선택 과제: 인터넷에 공개하기</h2>
 <p><strong>목표:</strong> 로컬에서 완성한 지도와 타일을 배포해, 다른 사람이 접속할 수 있는 공개 주소에서 지도를 사용하게 합니다.</p>
 <p><strong>결과물:</strong> 공개 웹 주소와 타일 제공 주소, 배포·갱신 방법</p>
 <p>로컬 완료 후 진행합니다. <strong>R2는 타일 저장·제공용이며 AI 처리 도구가 아닙니다.</strong></p>
-<h3 id="section-48">참가자가 할 일</h3>
+<h3 id="section-49">참가자가 할 일</h3>
 <p>공개 여부와 서비스를 정하세요. 로그인·본인 인증·필요한 결제 설정은 직접 합니다. 비밀 키는 AI 대화에 붙이지 말고 로컬 환경에 입력하세요.</p>
-<h3 id="section-49">AI 요청문 — 선택한 서비스에 맞는 배포 준비</h3>
+<h3 id="section-50">AI 요청문 — 선택한 서비스에 맞는 배포 준비</h3>
 <p>어떤 파일을 어디에 올릴지, 타일 URL·CORS를 어떻게 설정할지 정하고 배포 파일·명령을 준비하는 요청입니다. 로그인과 실제 배포는 참가자가 이어서 수행합니다.</p>
 <pre><code class="language-text">내가 선택한 스토리지는 [서비스], 웹 호스팅은 [서비스]야.
 현재 output/manifest.json·타일과 웹 코드를 읽고 실제 공식 배포 방법을 확인해.
@@ -979,7 +990,7 @@ R2 업로드·공개 배포는 아직 수행하지 마.
 어떤 파일이 어디에 공개되는지 설명하고, 내가 실행할 명령과 확인할 주소를 알려줘.
 지금은 실제 업로드나 배포를 실행하지 마.
 </code></pre>
-<h3 id="section-50">참가자가 실행하고 확인</h3>
+<h3 id="section-51">참가자가 실행하고 확인</h3>
 <ol>
 <li>R2 또는 선택한 정적 스토리지 계정과 웹 호스팅을 준비합니다.</li>
 <li>타일·manifest는 스토리지에, HTML·JavaScript는 웹 호스팅에 배치합니다. 실제 URL 구조를 확인합니다.</li>
@@ -989,7 +1000,7 @@ R2 업로드·공개 배포는 아직 수행하지 마.
 <li>모바일 공개라면 실제 폰에서 터치·고해상도·메모리·야경을 확인합니다.</li>
 </ol>
 <p>공급자마다 배포 명령이 다르므로 실제 선택한 도구의 공식 안내로 확정합니다. 계정이나 결제 수단이 없으면 로컬 완료로 기록하고 공개 주소를 만들었다고 적지 마세요.</p>
-<h2 id="section-51">실습이 끝나면 설치 항목 정리하기</h2>
+<h2 id="section-52">실습이 끝나면 설치 항목 정리하기</h2>
 <p><strong>목표:</strong> 작성한 코드·지도·이미지는 남기고, 이번 실습이 설치한 도구·모델·캐시를 제거합니다.</p>
 <p><strong>참가자가 직접 할 일:</strong> 남길 결과물을 확인하고 아래 종료·삭제 순서를 수행합니다. AI는 삭제 계획 설명과 오류 해결만 돕습니다.</p>
 <p>서버와 이미지 편집 작업을 종료한 뒤, 저장소에서 삭제 계획을 확인하세요.</p>
@@ -1004,7 +1015,7 @@ R2 업로드·공개 배포는 아직 수행하지 마.
 <pre><code class="language-bash">bash scripts/setup.sh
 </code></pre>
 <p>도구 설치가 끝나면 <code>bash scripts/run.sh pnpm run setup:model</code>로 지운 모델을 다시 받습니다. 작성한 코드와 남겨둔 데이터·이미지는 그대로 이어서 사용합니다.</p>
-<h2 id="section-52">막혔을 때 AI에게 전달할 형식</h2>
+<h2 id="section-53">막혔을 때 AI에게 전달할 형식</h2>
 <p>현재 단계의 실행 오류를 재현하고 수정해 달라는 요청입니다. 아래 양식에 실행한 명령과 실제 오류를 채워 코딩 AI에 전달하세요.</p>
 <pre><code class="language-text">현재 단계:
 실행한 명령:
@@ -1065,7 +1076,7 @@ R2 업로드·공개 배포는 아직 수행하지 마.
 <td>중복 요청·캐시·이미지/GPU 자원 해제 확인</td>
 </tr>
 </tbody></table>
-<h2 id="section-53">마지막 제출 체크리스트</h2>
+<h2 id="section-54">마지막 제출 체크리스트</h2>
 <ul>
 <li><input disabled="" type="checkbox"> 범위와 중심점, 화풍, 지형 사용 여부를 기록했습니다.</li>
 <li><input disabled="" type="checkbox"> 내가 고른 동네의 OSM·Overture 원본과 출처·기준일·좌표계가 남아 있습니다.</li>
@@ -1081,7 +1092,7 @@ R2 업로드·공개 배포는 아직 수행하지 마.
 <li><input disabled="" type="checkbox"> 야경·공개 배포·미완료 항목을 실제 수행 여부대로 구분했습니다.</li>
 </ul>
 <p><strong>제출물:</strong> 작업 폴더, README, progress.md, sources.md, 단계별 reports, 낮 지도 화면. 모델 캐시나 계정 비밀정보를 제출 폴더에 복사하지 마세요.</p>
-<h2 id="section-54">참고 자료</h2>
+<h2 id="section-55">참고 자료</h2>
 <ul>
 <li><a href="https://hypeseoul.xyz/making-of/">HypeSeoul 원작 제작기</a></li>
 <li><a href="https://github.com/mflux-community/mflux#-installation">MFLUX 공식 설치 안내</a></li>

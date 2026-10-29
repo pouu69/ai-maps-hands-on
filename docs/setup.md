@@ -7,7 +7,7 @@
 1. macOS·arm64 여부와 기존 설치 소유 기록을 확인합니다.
 2. 고정 uv를 준비하고 기존 Python 3.12를 찾습니다. 없으면 `.python-version`의 버전을 `.tools/python`에 설치합니다.
 3. 기존 arm64 Node.js 20.19~26을 찾습니다. 없으면 `.node-version`의 버전을 `.tools/node`에 설치합니다.
-4. 기존 pnpm 10.x를 확인해 재사용합니다. 세부 버전은 고정하지 않습니다. 없거나 실행할 수 없으면 `setup/bootstrap.env`의 대체 버전을 `.tools/pnpm`에 설치합니다. Corepack 확인 중에는 자동 다운로드를 막고 캐시는 저장소 안에 둡니다.
+4. 기존 pnpm 10.x를 확인해 재사용합니다. 세부 버전은 고정하지 않습니다. Corepack으로 관리되는 pnpm은 기존 Corepack 캐시를 그대로 사용합니다. 호환 버전이 없거나 실행할 수 없을 때만 `setup/bootstrap.env`의 대체 버전을 `.tools/pnpm`에 설치합니다.
 5. `uv.lock`과 `pnpm-lock.yaml`을 바꾸지 않고 실습 패키지만 설치합니다. `uv sync --no-default-groups`와 `pnpm install --prod`로 실습용 의존성만 설치합니다.
 6. Chromium을 `.cache/playwright`에 설치하고 MFLUX 도움말·Chromium 실행을 확인합니다.
 7. `.tools/activate` 환경 파일을 만듭니다. 참가자 가이드 0단계에서 AI가 만드는 `scripts/run.sh`가 매 명령에서 이 파일을 적용합니다.
@@ -28,7 +28,7 @@ bash scripts/setup.sh --dry-run
 bash scripts/setup.sh
 ```
 
-셋업 스크립트는 설치가 끝나면 자체 검사를 실행하고 모델 준비 여부를 표시합니다. 성공 메시지가 나오면 도구 설치와 검사가 끝난 것입니다. 참가자 가이드 0단계의 AI 요청문은 `scripts/run.sh`를 만들고 모델 상태를 확인합니다. 이미 받은 모델은 다시 다운로드하지 않고, 없을 때만 약 15GB 모델을 받습니다. 모든 실습 명령은 `bash scripts/run.sh <명령과 인자>`로 실행합니다.
+셋업 스크립트는 설치가 끝나면 자체 검사를 실행하고 모델 준비 여부를 표시합니다. 성공 메시지가 나오면 기본 도구 설치와 검사가 끝난 것입니다. 참가자 가이드 0단계의 첫 AI 요청으로 `scripts/run.sh`와 `progress.md`를 준비한 뒤, 별도의 모델 준비 요청에서 4단계 이미지 편집에 사용할 모델을 확인합니다. 이미 받은 모델은 다시 다운로드하지 않고, 없을 때만 약 15GB 모델을 받습니다. 모든 실습 명령은 `bash scripts/run.sh <명령과 인자>`로 실행합니다.
 
 다운로드한 고정 모델은 `.cache/model` 경로로 사용할 수 있습니다. 이 경로는 저장소 안 캐시의 snapshot을 가리킵니다. 모델 캐시·해시 식별 정보는 `reports/model.json`에도 기록합니다.
 

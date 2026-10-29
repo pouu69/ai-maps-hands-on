@@ -78,7 +78,6 @@ export TORCH_HOME="$ROOT/.cache/torch"
 export MPLCONFIGDIR="$ROOT/.cache/matplotlib"
 export XDG_CACHE_HOME="$ROOT/.cache/xdg"
 export PYTHONPYCACHEPREFIX="$ROOT/.cache/pycache"
-export COREPACK_HOME="$ROOT/.cache/corepack"
 export COREPACK_ENABLE_AUTO_PIN=0
 export PLAYWRIGHT_BROWSERS_PATH="$ROOT/.cache/playwright"
 export PATH="$ROOT/.tools/node/bin:$ROOT/.tools/pnpm/bin:$ROOT/.tools/uv:$ROOT/.tools/bin:$PATH"
@@ -188,7 +187,7 @@ export PATH="$(dirname "$NODE"):$PATH"
 STEP="pnpm 확인·설치"
 PNPM=""
 EXISTING_PNPM="$(command -v pnpm || true)"
-# Probe Corepack without downloading a different pnpm; fallback stays repository-local.
+# Keep Corepack's existing cache so a globally installed pnpm shim remains usable.
 if [ -n "$EXISTING_PNPM" ]; then
   if ACTUAL_PNPM_VERSION="$(COREPACK_ENABLE_NETWORK=0 "$EXISTING_PNPM" --version 2>/dev/null)"; then
     case "$ACTUAL_PNPM_VERSION" in
@@ -219,7 +218,7 @@ STEP="셸 활성화 파일 생성"
 } > "$ROOT/.tools/runtime.env"
 {
   printf '# 이 저장소 안의 도구와 캐시를 사용합니다. 셸 설정 파일은 수정하지 않습니다.\n'
-  for name in UV_CACHE_DIR UV_PYTHON_INSTALL_DIR UV_PYTHON_BIN_DIR UV_PYTHON_PREFERENCE UV_PROJECT_ENVIRONMENT UV_SYSTEM_CERTS HF_HOME MFLUX_CACHE_DIR TORCH_HOME MPLCONFIGDIR XDG_CACHE_HOME PYTHONPYCACHEPREFIX PLAYWRIGHT_BROWSERS_PATH COREPACK_HOME COREPACK_ENABLE_AUTO_PIN; do
+  for name in UV_CACHE_DIR UV_PYTHON_INSTALL_DIR UV_PYTHON_BIN_DIR UV_PYTHON_PREFERENCE UV_PROJECT_ENVIRONMENT UV_SYSTEM_CERTS HF_HOME MFLUX_CACHE_DIR TORCH_HOME MPLCONFIGDIR XDG_CACHE_HOME PYTHONPYCACHEPREFIX PLAYWRIGHT_BROWSERS_PATH COREPACK_ENABLE_AUTO_PIN; do
     printf 'export %s=%q\n' "$name" "${!name}"
   done
   # Override the fallback .python-version when an existing Python was selected.
@@ -248,6 +247,6 @@ printf '\n도구 설치·검사 완료.\n'
 if [ "$MODEL_READY" = 1 ]; then
   printf '이미지 모델도 준비되어 있습니다. 다시 다운로드할 필요가 없습니다.\n'
 else
-  printf '이미지 모델은 아직 확인되지 않았습니다. 0단계 AI 요청문에서 준비하세요(약 15GB).\n'
+  printf '이미지 편집 모델은 아직 확인되지 않았습니다. 참가자 가이드의 “이미지 편집 모델 준비” AI 요청문에서 준비하세요(약 15GB).\n'
 fi
 printf '다음: 참가자 가이드 0단계의 AI 요청문으로 실행 도우미와 프로젝트 맥락을 준비하세요.\n'
