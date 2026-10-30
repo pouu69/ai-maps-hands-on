@@ -37,7 +37,7 @@ bash scripts/setup.sh
 - 터미널·코딩 AI에서 이 저장소를 작업 폴더로 사용합니다.
 - Python 명령은 `bash scripts/run.sh uv run --locked ...`, JavaScript 작업은 `bash scripts/run.sh pnpm run ...`을 사용합니다.
 - 단계 중 새 패키지가 필요하면 이유·라이선스를 확인해 정확한 버전으로 추가하고 잠금 파일을 갱신합니다. 별도의 전역 `pip install`·`npm install -g`·`brew install`은 기본 셋업에 필요하지 않습니다.
-- MFLUX에 `--model-path .cache/model`을 지정하고, 도구별 캐시는 활성화된 저장소 환경을 사용합니다. 저장소 밖에서 별도로 설치·다운로드한 것은 삭제 스크립트가 관리하지 않습니다.
+- MFLUX 편집 명령에 `--model .cache/model --base-model flux2-klein-4b`를 지정하고, 도구별 캐시는 활성화된 저장소 환경을 사용합니다. 저장소 밖에서 별도로 설치·다운로드한 것은 삭제 스크립트가 관리하지 않습니다.
 
 ## 삭제·복구
 

@@ -46,7 +46,8 @@ def main():
     report.parent.mkdir(parents=True, exist_ok=True)
     report.write_text(json.dumps({**config, "local_path": location}, indent=2) + "\n")
     print(
-        f"모델 다운로드 완료. 위치: {location}\n첫 편집 때 --model-path .cache/model을 사용하세요."
+        f"모델 다운로드 완료. 위치: {location}\n"
+        "첫 편집 때 --model .cache/model --base-model flux2-klein-4b를 사용하세요."
     )
     return 0
 
