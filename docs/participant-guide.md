@@ -552,24 +552,49 @@ bash scripts/run.sh uv run --locked mflux-generate-flux2-edit --help를 실행�
 
 **목표:** 내 맥에서 대표 PNG 한 장을 768×768로 편집해 원본의 지도 형태가 유지되는지 확인합니다.
 
-`[원하는 화풍]`을 채워 요청문을 보내세요. AI가 영어 편집 지시문을 정리하고 대표 이미지 한 장을 편집합니다.
+`[원하는 화풍]`을 채워 요청문을 보내세요. AI가 화풍을 영어로 바꿔 아래 `[STYLE]`에 넣고, 구조 보존 지시문과 함께 대표 이미지 한 장을 편집합니다.
 
 ```text
 원하는 화풍은 [원하는 화풍]이야. 대표 원본 한 장만 편집해.
 
 1. 입력·화풍 준비
 captures/pilot.png가 768×768인지 확인하고 원본은 보존해.
-원하는 화풍을 영어로 정리하되 카메라·건물·도로·하천·공원의 형태와 위치를 유지하도록 해.
+원하는 화풍을 색감·붓질·표면 질감 중심의 영어 표현으로 정리해.
+아래 [STYLE]에 그 표현을 넣고, 나머지 구조 보존 지시문은 유지해.
 
 2. 한 장 편집 실행
-아래 --prompt의 화풍을 내가 정한 화풍으로 바꿔 명령을 실행해.
+아래 --prompt의 [STYLE]을 채워 명령을 실행해.
 mkdir -p stylized/test-768
 
 time bash scripts/run.sh uv run --locked mflux-generate-flux2-edit \
   --model .cache/model \
   --base-model flux2-klein-4b \
   --image-paths captures/pilot.png \
-  --prompt "Restyle this city render as a warm hand-painted miniature city illustration. Preserve the camera, building footprints and heights, roads, waterways, and parks. Change the visual style while keeping the layout." \
+  --prompt "1. Desired style
+[STYLE]
+
+2. Editing task
+Restyle the provided 3D map render using the desired style.
+Apply the style to the colors, brushwork, and surface textures
+of the existing roofs, walls, roads, ground, and vegetation.
+
+3. Preserve the original structure
+Keep the original camera angle, projection, framing, and scale.
+Preserve every building's position, footprint, height, silhouette,
+and roof shape. Keep flat roofs flat.
+Preserve road widths, intersections, waterways, and park boundaries.
+Keep all objects aligned with their original image coordinates.
+
+4. Limit the changes
+Change surface appearance only.
+Keep empty ground empty and roads as roads.
+Keep water inside the existing water boundaries.
+Do not introduce buildings, windows, courtyards, trees, canals,
+or other objects that are absent from the input.
+Do not remove, move, resize, or reshape existing objects.
+
+The result should depict the same scene with the same geometry
+and layout, expressed in the desired artistic style." \
   --steps 4 \
   --guidance 1 \
   --quantize 4 \
@@ -580,6 +605,8 @@ time bash scripts/run.sh uv run --locked mflux-generate-flux2-edit \
 
 3. 결과 확인·기록
 결과가 768×768인지 검사하고, 원본과 편집 결과를 비교해 보여줘.
+건물 추가·누락·지붕 변형·도로 변화·물 영역 생성 여부를 확인하고,
+구조가 바뀐 결과는 통과로 기록하지 마.
 모델 로딩을 포함한 전체 소요 시간과 사용한 영어 지시문을 reports/stylize.md에 기록해.
 실제 결과와 다음 단계를 progress.md에 기록해. 이웃 3장 편집은 아직 실행하지 마.
 ```
@@ -630,7 +657,7 @@ AI가 모델 하나를 유지하며 3장을 차례로 편집할 코드를 작성
 ```text
 1. 편집 API·설정 확인
 현재 설치한 mflux 0.24.0의 Flux2KleinEdit 공식 Python API를 확인해.
-4-2에서 사용한 .cache/model·해상도·양자화·스텝·guidance·시드·화풍을 그대로 사용해.
+4-2에서 사용한 .cache/model·해상도·양자화·스텝·guidance·시드와 영어 편집 지시문 전체를 그대로 사용해.
 
 2. 3장 편집 코드 작성
 scripts/stylize.py --pilot으로 이웃 3장을 편집할 코드를 작성해.
@@ -712,6 +739,7 @@ progress.md를 갱신하고 편집을 시작하지 않은 상태에서 마쳐.
 
 1. 전체 편집 준비
 앞서 만든 scripts/stylize.py에 --all로 전체 타일을 처리하는 기능을 추가해.
+3장 시험에서 사용한 영어 편집 지시문 전체와 모델·해상도·양자화·스텝·guidance·시드를 유지해.
 촬영한 768×768 원본을 그대로 입력하고 편집 결과도 768×768로 저장해.
 원본은 보존해.
 기본 방식은 모델을 한 번 로드한 뒤 한 장씩 편집해.
